@@ -5,19 +5,21 @@
 static GtkWidget * canvas;
 static gint canvas_width, canvas_height;
 static gint canvas_sx, canvas_sy, canvas_x0, canvas_y0;
-
 static double view_x0, view_y0, view_x1, view_y1;
+static cairo_t * cairo;
+
+static void (*draw)();
 
 
 static double v2cx (double vx)
 {
-  return canvas_x0 + vx * canvas_sx;
+  return canvas_x0 + (vx - view_x0) * canvas_sx;
 }
 
 
 static double v2cy (double vy)
 {
-  return canvas_y0 + vy * canvas_sy;
+  return canvas_y0 + (vy - view_y0) * canvas_sy;
 }
 
 
@@ -32,24 +34,16 @@ static gint cb_expose (GtkWidget * ww,
 		       GdkEventExpose * ee,
 		       gpointer data)
 {
-  cairo_t * cr;
+  cairo = gdk_cairo_create (ee->window);
   
-  cr = gdk_cairo_create (ee->window);
+  cairo_set_source_rgb (cairo, 1.0, 1.0, 1.0);
+  cairo_rectangle (cairo, 0, 0, canvas_width, canvas_height);
+  cairo_fill (cairo);
   
-  cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
-  cairo_rectangle (cr, 0, 0, canvas_width, canvas_height);
-  cairo_fill (cr);
+  draw ();
   
-  cairo_set_source_rgb (cr, 0.5, 0.5, 0.5);
-  cairo_set_line_width (cr, 2.0);
-  cairo_rectangle (cr,
-		   v2cx(view_x0) - 2,
-		   v2cy(view_y0) + 2,
-		   v2cx(view_x1) + 2,
-		   v2cy(view_y1) - 2);
-  cairo_stroke (cr);
-  
-  cairo_destroy (cr);
+  cairo_destroy (cairo);
+  cairo = 0;
   
   return TRUE;
 }
@@ -89,15 +83,39 @@ static void cb_quit (GtkWidget * ww, gpointer data)
 }
 
 
-void gfx_main (int argc, char ** argv)
+void gfx_set_pen (double width, double red, double green, double blue)
+{
+  if (!cairo) {
+    return;
+  }
+  cairo_set_source_rgb (cairo, red, green, blue);
+  ////  cairo_set_line_width (cairo, width / canvas_sx);
+  cairo_set_line_width (cairo, 1.0);
+}
+
+
+void gfx_draw_line (double x0, double y0, double x1, double y1)
+{
+  if (!cairo) {
+    return;
+  }
+  cairo_move_to (cairo, v2cx(x0), v2cy(y0));
+  cairo_line_to (cairo, v2cx(x1), v2cy(y1));
+  cairo_stroke (cairo);
+}
+
+
+void gfx_main (void (*draw_callback)())
 {
   GtkWidget *window, *vbox, *hbox, *btn;
   
-  gtk_init (&argc, &argv);
+  gtk_init (0, 0);
   view_x0 = -1.0;
   view_y0 = -1.0;
   view_x1 =  1.0;
   view_y1 =  1.0;
+  draw = draw_callback;
+  cairo = 0;
   
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   

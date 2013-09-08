@@ -10,6 +10,7 @@ classes-start: classes-start.o Makefile
 	$(CXX) $(CXXFLAGS) -o classes-start classes-start.o
 
 gfx.o: gfx.cpp gfx.hpp
+test-gfx.o: gfx.hpp
 
 clean:
 	rm -rf *~ *.o *.dSYM classes-start test-gfx
