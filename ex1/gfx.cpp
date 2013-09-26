@@ -23,6 +23,7 @@ namespace {
 }
 
 
+static std::ostream * dbgos = 0;
 static vector<Button*> buttons;
 static GtkWidget * canvas;
 static gint canvas_width, canvas_height;
@@ -44,6 +45,13 @@ static double v2cx (double vx)
 static double v2cy (double vy)
 {
   return canvas_y0 + (vy - view_y0) * canvas_sy;
+}
+
+
+/* convert lengths form view to canvas */
+static double v2cr (double vr)
+{
+  return vr * canvas_sx;
 }
 
 
@@ -140,6 +148,9 @@ void gfx_add_button (std::string const & label, void (*click_callback)())
 
 void gfx_set_view (double x0, double y0, double x1, double y1)
 {
+  if (dbgos) {
+    *dbgos << __func__ << "  " << x0 << "  " << y0 << "  " << x1 << "  " << y1 << "\n";
+  }
   reconf_v2c (canvas_width, canvas_height, x0, y0, x1, y1);
 }
 
@@ -163,6 +174,26 @@ void gfx_draw_line (double x0, double y0, double x1, double y1)
   cairo_move_to (cairo, v2cx(x0), v2cy(y0));
   cairo_line_to (cairo, v2cx(x1), v2cy(y1));
   cairo_stroke (cairo);
+}
+
+
+void gfx_draw_arc (double cx, double cy, double rr, double a0, double a1)
+{
+  if (!cairo) {
+    return;
+  }
+  cairo_arc (cairo, v2cx(cx), v2cy(cy), v2cr(rr), a0, a1);
+  cairo_stroke (cairo);
+}
+
+
+void gfx_fill_arc (double cx, double cy, double rr, double a0, double a1)
+{
+  if (!cairo) {
+    return;
+  }
+  cairo_arc (cairo, v2cx(cx), v2cy(cy), v2cr(rr), a0, a1);
+  cairo_fill (cairo);
 }
 
 
@@ -226,4 +257,12 @@ void gfx_main (void (*draw_callback)())
     delete buttons[ii];
   }
   buttons.clear();
+}
+
+
+std::ostream * gfx_debug (std::ostream * debug_os)
+{
+  std::ostream * old = dbgos;
+  dbgos = debug_os;
+  return old;
 }
