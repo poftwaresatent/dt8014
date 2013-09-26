@@ -1,7 +1,29 @@
+#include "gfx.hpp"
 #include <gtk/gtk.h>
 #include <iostream>
+#include <vector>
+
+using namespace std;
 
 
+namespace {
+
+  class Button
+  {
+  public:
+    Button (string const & label, void (*callback)())
+      : label_(label),
+	callback_(callback)
+    {}
+  
+    string const label_;
+    void (*callback_)();
+  };
+  
+}
+
+
+static vector<Button*> buttons;
 static GtkWidget * canvas;
 static gint canvas_width, canvas_height;
 static gint canvas_sx, canvas_sy, canvas_x0, canvas_y0;
@@ -11,23 +33,25 @@ static cairo_t * cairo;
 static void (*draw)();
 
 
+/* convert view X coordinate to canvas */
 static double v2cx (double vx)
 {
   return canvas_x0 + (vx - view_x0) * canvas_sx;
 }
 
 
+/* convert view Y coordinate to canvas */
 static double v2cy (double vy)
 {
   return canvas_y0 + (vy - view_y0) * canvas_sy;
 }
 
 
-static gint cb_idle (gpointer data)
-{
-  gtk_widget_queue_draw (canvas);
-  return TRUE;
-}
+// static gint cb_idle (gpointer data)
+// {
+//   gtk_widget_queue_draw (canvas);
+//   return TRUE;
+// }
 
 
 static gint cb_expose (GtkWidget * ww,
@@ -49,12 +73,16 @@ static gint cb_expose (GtkWidget * ww,
 }
 
 
-static gint cb_size_allocate (GtkWidget * ww,
-			      GtkAllocation * aa,
-			      gpointer data)
+static void reconf_v2c (gint cw, gint ch,
+			double vx0, double vy0,
+			double vx1, double vy1)
 {
-  canvas_width = aa->width;
-  canvas_height = aa->height;
+  canvas_width = cw;
+  canvas_height = ch;
+  view_x0 = vx0;
+  view_y0 = vy0;
+  view_x1 = vx1;
+  view_y1 = vy1;
   
   canvas_sx = canvas_width / (view_x1 - view_x0);
   if (canvas_sx < 1) {
@@ -73,6 +101,15 @@ static gint cb_size_allocate (GtkWidget * ww,
   canvas_x0 = (canvas_width - (view_x1 - view_x0) * canvas_sx) / 2;
   canvas_y0 = canvas_height - (canvas_height + (view_y1 - view_y0) * canvas_sy) / 2;
   
+  gtk_widget_queue_draw (canvas);
+}
+
+
+static gint cb_size_allocate (GtkWidget * ww,
+			      GtkAllocation * aa,
+			      gpointer data)
+{
+  reconf_v2c (aa->width, aa->height, view_x0, view_y0, view_x1, view_y1);
   return TRUE;
 }
 
@@ -80,6 +117,30 @@ static gint cb_size_allocate (GtkWidget * ww,
 static void cb_quit (GtkWidget * ww, gpointer data)
 {
   gtk_main_quit();
+}
+
+
+static void cb_click (GtkWidget * ww, gpointer data)
+{
+  reinterpret_cast<Button*>(data)->callback_();
+}
+
+
+void gfx_add_button (char const * label, void (*click_callback)())
+{
+  buttons.push_back (new Button (label, click_callback));
+}
+
+
+void gfx_add_button (std::string const & label, void (*click_callback)())
+{
+  buttons.push_back (new Button(label, click_callback));
+}
+
+
+void gfx_set_view (double x0, double y0, double x1, double y1)
+{
+  reconf_v2c (canvas_width, canvas_height, x0, y0, x1, y1);
 }
 
 
@@ -148,11 +209,21 @@ void gfx_main (void (*draw_callback)())
   gtk_box_pack_start (GTK_BOX (hbox), btn, TRUE, TRUE, 0);
   gtk_widget_show (btn);
   
-  gtk_idle_add (cb_idle, 0);
+  for (size_t ii(0); ii < buttons.size(); ++ii) {
+    btn = gtk_button_new_with_label (buttons[ii]->label_.c_str());
+    g_signal_connect (btn, "clicked", G_CALLBACK (cb_click), buttons[ii]);
+    gtk_box_pack_start (GTK_BOX (hbox), btn, TRUE, TRUE, 0);
+    gtk_widget_show (btn);
+  }
+  
+  //  gtk_idle_add (cb_idle, 0);
   
   gtk_widget_show (window);
   
-  std::cerr << "gfx_main: before gtk_main\n";
   gtk_main ();
-  std::cerr << "gfx_main: after gtk_main\n";
+  
+  for (size_t ii(0); ii < buttons.size(); ++ii) {
+    delete buttons[ii];
+  }
+  buttons.clear();
 }

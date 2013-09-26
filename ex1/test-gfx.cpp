@@ -18,9 +18,20 @@ void cb_draw ()
 }
 
 
+void cb_click ()
+{
+  static int count = 0;
+  if (++count % 2) {
+    gfx_set_view (-2.0, -2.0, 2.0, 2.0);
+  }
+  else {
+    gfx_set_view (-3.0, -3.0, 3.0, 3.0);
+  }
+}
+
+
 int main (int argc, char ** argv)
 {
-  cerr << "main: before gfx_main\n";
+  gfx_add_button ("click", cb_click);
   gfx_main (cb_draw);
-  cerr << "main: after gfx_main\n";
 }
