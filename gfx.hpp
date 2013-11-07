@@ -7,7 +7,7 @@
 /* Only has an effect before gfx_main() */
 void gfx_add_button (std::string const & label, void (*click_callback)());
 
-/* Only has an effect inside a draw_callback. */
+/* Intended to be used /outside/ a draw_callback, but might also work inside. */
 void gfx_set_view (double x0, double y0, double x1, double y1);
 
 /* Only has an effect inside a draw_callback. */
