@@ -6,7 +6,7 @@ PROGRAMS = $(shell ls *.cpp | sed 's:\.cpp$$::')
 all:
 	for prg in $(PROGRAMS); \
 	do \
-	  $(MAKE) recurse PRG=$$prg || exit 42; \
+	  $(MAKE) recurse PRG=$$prg; \
 	done
 
 recurse: $(PRG).cpp Makefile
