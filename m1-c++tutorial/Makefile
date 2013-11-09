@@ -1,20 +1,16 @@
 #CXX = g++
 CXX = clang++
 CXXFLAGS = -Wall -O0 -g
+PROGRAMS = $(shell ls *.cpp | sed 's:\.cpp$$::')
 
-all: ringbuffer-ex1 ringbuffer-ex2 template-error-ex1 template-error-ex2
+all:
+	for prg in $(PROGRAMS); \
+	do \
+	  $(MAKE) recurse PRG=$$prg || exit 42; \
+	done
 
-ringbuffer-ex1: ringbuffer-ex1.o Makefile
-	$(CXX) $(CXXFLAGS) -o ringbuffer-ex1 ringbuffer-ex1.o
-
-ringbuffer-ex2: ringbuffer-ex2.o Makefile
-	$(CXX) $(CXXFLAGS) -o ringbuffer-ex2 ringbuffer-ex2.o
-
-template-error-ex1: template-error-ex1.o Makefile
-	$(CXX) $(CXXFLAGS) -o template-error-ex1 template-error-ex1.o
-
-template-error-ex2: template-error-ex2.o Makefile
-	$(CXX) $(CXXFLAGS) -o template-error-ex2 template-error-ex2.o
+recurse: $(PRG).cpp Makefile
+	$(CXX) $(CXXFLAGS) -o $(PRG) $(PRG).cpp
 
 clean:
-	rm -rf *~ *.o *.dSYM ringbuffer-ex1 ringbuffer-ex2 template-error-ex1 template-error-ex2
+	rm -fr *~ *.o *.dSYM $(PROGRAMS)
