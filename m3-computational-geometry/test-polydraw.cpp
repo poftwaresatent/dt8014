@@ -53,13 +53,12 @@ void cb_draw ()
 }
 
 
-void cb_mouse (double px, double py, mouse_event_t ee)
+void cb_mouse (double px, double py, int flags)
 {
-  switch (ee) {
-  case MOUSE_PRESS:
+  if (flags & MOUSE_PRESS) {
     points.push_back (Point (px, py));
-    break;
-  case MOUSE_DRAG:
+  }
+  else if (flags & MOUSE_DRAG) {
     points.back().x = px;
     points.back().y = py;
   }

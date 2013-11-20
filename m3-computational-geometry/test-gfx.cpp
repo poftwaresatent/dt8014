@@ -32,14 +32,13 @@ void cb_draw ()
 }
 
 
-void cb_mouse (double px, double py, mouse_event_t ee)
+void cb_mouse (double px, double py, int flags)
 {
-  switch (ee) {
-  case MOUSE_PRESS:
+  if (flags & MOUSE_PRESS) {
     mx0 = px;
     my0 = py;
-    break;
-  case MOUSE_DRAG:
+  }
+  else if (flags & MOUSE_DRAG) {
     mx1 = px;
     my1 = py;
   }

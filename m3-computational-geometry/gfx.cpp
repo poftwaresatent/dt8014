@@ -3,6 +3,32 @@
 #include <iostream>
 #include <vector>
 
+
+namespace std {
+  
+  ostream & operator << (ostream & os, dt8014::gfx::mouse_flags_t const & flags)
+  {
+    os << (flags & dt8014::gfx::MOUSE_PRESS ? "Press-" : "")
+       << (flags & dt8014::gfx::MOUSE_RELEASE ? "Release-" : "")
+       << (flags & dt8014::gfx::MOUSE_DRAG ? "Drag-" : "")
+       << (flags & dt8014::gfx::MOUSE_SHIFT ? "Shift-" : "")
+       << (flags & dt8014::gfx::MOUSE_CTRL ? "Ctrl-" : "")
+       << (flags & dt8014::gfx::MOUSE_MOD1 ? "M1-" : "")
+       << (flags & dt8014::gfx::MOUSE_MOD2 ? "M2-" : "")
+       << (flags & dt8014::gfx::MOUSE_MOD3 ? "M3-" : "")
+       << (flags & dt8014::gfx::MOUSE_MOD4 ? "M4-" : "")
+       << (flags & dt8014::gfx::MOUSE_MOD5 ? "M5-" : "")
+       << (flags & dt8014::gfx::MOUSE_B1 ? "B1" : "")
+       << (flags & dt8014::gfx::MOUSE_B2 ? "B2" : "")
+       << (flags & dt8014::gfx::MOUSE_B3 ? "B3" : "")
+       << (flags & dt8014::gfx::MOUSE_B4 ? "B4" : "")
+       << (flags & dt8014::gfx::MOUSE_B5 ? "B5" : "");
+    return os;
+  }
+  
+}
+
+
 using namespace std;
 
 
@@ -35,7 +61,7 @@ namespace dt8014 {
     static cairo_t * cairo;
     
     static void (*draw_cb)();
-    static void (*mouse_cb)(double, double, mouse_event_t);
+    static void (*mouse_cb)(double, double, int);
     
     
     /* convert view X coordinate to canvas */
@@ -165,19 +191,70 @@ namespace dt8014 {
     }
     
     
+    template<typename GdkEventType>
+    int convert_flags (GdkEventType * ee)
+    {
+      int flags (0);
+      if (ee->state & GDK_SHIFT_MASK) {
+	flags |= MOUSE_SHIFT;
+      }
+      if (ee->state & GDK_CONTROL_MASK) {
+	flags |= MOUSE_CTRL;
+      }
+      if (ee->state & GDK_MOD1_MASK) {
+	flags |= MOUSE_MOD1;
+      }
+      if (ee->state & GDK_MOD2_MASK) {
+	flags |= MOUSE_MOD2;
+      }
+      if (ee->state & GDK_MOD3_MASK) {
+	flags |= MOUSE_MOD3;
+      }
+      if (ee->state & GDK_MOD4_MASK) {
+	flags |= MOUSE_MOD4;
+      }
+      if (ee->state & GDK_MOD5_MASK) {
+	flags |= MOUSE_MOD5;
+      }
+      if (ee->state & GDK_BUTTON1_MASK) {
+	flags |= MOUSE_B1;
+      }
+      if (ee->state & GDK_BUTTON2_MASK) {
+	flags |= MOUSE_B2;
+      }
+      if (ee->state & GDK_BUTTON3_MASK) {
+	flags |= MOUSE_B3;
+      }
+      if (ee->state & GDK_BUTTON4_MASK) {
+	flags |= MOUSE_B4;
+      }
+      if (ee->state & GDK_BUTTON5_MASK) {
+	flags |= MOUSE_B5;
+      }
+      return flags;
+    }
+    
+    
     static gint cb_mouse_click (GtkWidget * ww,
 				GdkEventButton * bb,
 				gpointer data)
     {
-      if (dbgos) {
-	*dbgos << __func__ << "  " << bb->x << " -> " << c2vx (bb->x)
-	       << "  " << bb->y << " -> " << c2vy (bb->y)
-	       << (bb->type == GDK_BUTTON_PRESS ? " press\n" : " release\n");
+      int flags (convert_flags (bb));
+      if (bb->type == GDK_BUTTON_PRESS) {
+	flags |= MOUSE_PRESS;
       }
-      mouse_cb (c2vx (bb->x),
-		c2vy (bb->y),
-		bb->type == GDK_BUTTON_PRESS ? MOUSE_PRESS : MOUSE_RELEASE);
+      else {
+	flags |= MOUSE_RELEASE;
+      }
+      
+      if (dbgos) {
+	*dbgos << __func__ << "  " << bb->x << " -> " << c2vx (bb->x) << "  " << bb->y
+	       << " -> " << c2vy (bb->y) << " " << (mouse_flags_t) flags << "\n";
+      }
+      
+      mouse_cb (c2vx (bb->x), c2vy (bb->y), flags);
       gtk_widget_queue_draw (canvas);
+      
       return TRUE;
     }
     
@@ -188,12 +265,17 @@ namespace dt8014 {
       int mx, my;
       GdkModifierType modifier;
       gdk_window_get_pointer(ww->window, &mx, &my, &modifier);
+
+      int flags (convert_flags (ee) | MOUSE_DRAG);
+      
       if (dbgos) {
-	*dbgos << __func__ << "  " << mx << " -> " << c2vx (mx)
-	       << "  " << my << " -> " << c2vy (my) << " drag\n";
+	*dbgos << __func__ << "  " << mx << " -> " << c2vx (mx) << "  " << my
+	       << " -> " << c2vy (my) << " " << (mouse_flags_t) flags << "\n";
       }
+      
       mouse_cb (c2vx (mx), c2vy (my), MOUSE_DRAG);
       gtk_widget_queue_draw (canvas);
+      
       return TRUE;
     }
     
@@ -316,7 +398,7 @@ namespace dt8014 {
     
     void main (std::string const & window_title,
 	       void (*draw_callback)(),
-	       void (*mouse_callback)(double px, double py, mouse_event_t ee))
+	       void (*mouse_callback)(double px, double py, int flags))
     {
       GtkWidget *window, *vbox, *hbox, *btn;
   

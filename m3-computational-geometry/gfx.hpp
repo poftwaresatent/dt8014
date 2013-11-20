@@ -7,10 +7,22 @@ namespace dt8014 {
   namespace gfx {
     
     typedef enum {
-      MOUSE_PRESS,
-      MOUSE_RELEASE,
-      MOUSE_DRAG
-    } mouse_event_t;
+      MOUSE_PRESS   = 1 <<  1,
+      MOUSE_RELEASE = 1 <<  2,
+      MOUSE_DRAG    = 1 <<  3,
+      MOUSE_B1      = 1 <<  4,	// usually the left button
+      MOUSE_B2      = 1 <<  5,	// usually the right button
+      MOUSE_B3      = 1 <<  6,
+      MOUSE_B4      = 1 <<  7,
+      MOUSE_B5      = 1 <<  8,
+      MOUSE_SHIFT   = 1 <<  9,
+      MOUSE_CTRL    = 1 << 10,
+      MOUSE_MOD1    = 1 << 11,	// usually the Alt key
+      MOUSE_MOD2    = 1 << 12,
+      MOUSE_MOD3    = 1 << 13,
+      MOUSE_MOD4    = 1 << 14,
+      MOUSE_MOD5    = 1 << 15
+    } mouse_flags_t;
     
     
     /*
@@ -54,7 +66,7 @@ namespace dt8014 {
     */
     void main (std::string const & window_title,
 	       void (*draw_callback)(),
-	       void (*mouse_callback)(double px, double py, mouse_event_t ee));
+	       void (*mouse_callback)(double px, double py, int flags));
     
     std::ostream * debug (std::ostream * debug_os);
     
