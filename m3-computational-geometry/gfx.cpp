@@ -61,13 +61,13 @@ namespace dt8014 {
     
     static double c2vx (double cx)
     {
-      return (cx - canvas_x0) / canvas_sx;
+      return view_x0 + (cx - canvas_x0) / canvas_sx;
     }
     
     
     static double c2vy (double cy)
     {
-      return (cy - canvas_y0) / canvas_sy;
+      return view_y0 + (cy - canvas_y0) / canvas_sy;
     }
     
     
