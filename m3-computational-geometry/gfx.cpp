@@ -34,9 +34,10 @@ namespace dt8014 {
     static double view_x0, view_y0, view_x1, view_y1;
     static cairo_t * cairo;
     
-    static void (*draw)();
-
-
+    static void (*draw_cb)();
+    static void (*mouse_cb)(double, double, mouse_event_t);
+    
+    
     /* convert view X coordinate to canvas */
     static double v2cx (double vx)
     {
@@ -56,8 +57,20 @@ namespace dt8014 {
     {
       return vr * canvas_sx;
     }
-
-
+    
+    
+    static double c2vx (double cx)
+    {
+      return (cx - canvas_x0) / canvas_sx;
+    }
+    
+    
+    static double c2vy (double cy)
+    {
+      return (cy - canvas_y0) / canvas_sy;
+    }
+    
+    
     // static gint cb_idle (gpointer data)
     // {
     //   gtk_widget_queue_draw (canvas);
@@ -79,7 +92,7 @@ namespace dt8014 {
       cairo_rectangle (cairo, 0, 0, canvas_width, canvas_height);
       cairo_fill (cairo);
   
-      draw ();
+      draw_cb ();
   
       cairo_destroy (cairo);
       cairo = 0;
@@ -139,8 +152,41 @@ namespace dt8014 {
     {
       reinterpret_cast<Button*>(data)->callback_();
     }
-
-
+    
+    
+    static gint cb_mouse_click (GtkWidget * ww,
+				GdkEventButton * bb,
+				gpointer data)
+    {
+      if (dbgos) {
+	*dbgos << __func__ << "  " << bb->x << " -> " << c2vx (bb->x)
+	       << "  " << bb->y << " -> " << c2vy (bb->y)
+	       << (bb->type == GDK_BUTTON_PRESS ? " press\n" : " release\n");
+      }
+      mouse_cb (c2vx (bb->x),
+		c2vy (bb->y),
+		bb->type == GDK_BUTTON_PRESS ? MOUSE_PRESS : MOUSE_RELEASE);
+      gtk_widget_queue_draw (canvas);
+      return TRUE;
+    }
+    
+    
+    static gint cb_mouse_motion (GtkWidget * ww,
+				 GdkEventMotion * ee)
+    {
+      int mx, my;
+      GdkModifierType modifier;
+      gdk_window_get_pointer(ww->window, &mx, &my, &modifier);
+      if (dbgos) {
+	*dbgos << __func__ << "  " << mx << " -> " << c2vx (mx)
+	       << "  " << my << " -> " << c2vy (my) << " drag\n";
+      }
+      mouse_cb (c2vx (mx), c2vy (my), MOUSE_DRAG);
+      gtk_widget_queue_draw (canvas);
+      return TRUE;
+    }
+    
+    
     void add_button (char const * label, void (*click_callback)())
     {
       buttons.push_back (new Button (label, click_callback));
@@ -207,7 +253,9 @@ namespace dt8014 {
     }
 
 
-    void main (void (*draw_callback)(), std::string const & window_title)
+    void main (std::string const & window_title,
+	       void (*draw_callback)(),
+	       void (*mouse_callback)(double px, double py, mouse_event_t ee))
     {
       GtkWidget *window, *vbox, *hbox, *btn;
   
@@ -216,7 +264,8 @@ namespace dt8014 {
       view_y0 = -1.0;
       view_x1 =  1.0;
       view_y1 =  1.0;
-      draw = draw_callback;
+      draw_cb = draw_callback;
+      mouse_cb = mouse_callback;
       cairo = 0;
   
       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -229,14 +278,14 @@ namespace dt8014 {
       canvas = gtk_drawing_area_new ();
       g_signal_connect (canvas, "expose_event", G_CALLBACK (cb_expose), NULL);
       g_signal_connect (canvas, "size_allocate", G_CALLBACK (cb_size_allocate), NULL);
-      // g_signal_connect (canvas, "button_press_event", G_CALLBACK (cb_click), NULL);
-      // g_signal_connect (canvas, "button_release_event", G_CALLBACK (cb_click), NULL);
-      // g_signal_connect (canvas, "motion_notify_event", G_CALLBACK (cb_motion), NULL);
-      // gtk_widget_set_events (canvas,
-      // 			 GDK_BUTTON_PRESS_MASK |
-      // 			 GDK_BUTTON_RELEASE_MASK |
-      // 			 GDK_BUTTON_MOTION_MASK);
-  
+      g_signal_connect (canvas, "button_press_event", G_CALLBACK (cb_mouse_click), NULL);
+      g_signal_connect (canvas, "button_release_event", G_CALLBACK (cb_mouse_click), NULL);
+      g_signal_connect (canvas, "motion_notify_event", G_CALLBACK (cb_mouse_motion), NULL);
+      gtk_widget_set_events (canvas,
+			     GDK_BUTTON_PRESS_MASK |
+			     GDK_BUTTON_RELEASE_MASK |
+			     GDK_BUTTON_MOTION_MASK);
+      
       gtk_widget_show (canvas);
   
       gtk_widget_set_size_request (canvas, 400, 500);

@@ -6,6 +6,13 @@
 namespace dt8014 {
   namespace gfx {
     
+    typedef enum {
+      MOUSE_PRESS,
+      MOUSE_RELEASE,
+      MOUSE_DRAG
+    } mouse_event_t;
+    
+    
     /*
       Only has an effect before main()
     */
@@ -44,10 +51,12 @@ namespace dt8014 {
       draw_callback, use the various other gfx:: functions to actually
       draw things.
     */
-    void main (void (*draw_callback)(), std::string const & window_title);
+    void main (std::string const & window_title,
+	       void (*draw_callback)(),
+	       void (*mouse_callback)(double px, double py, mouse_event_t ee));
     
     std::ostream * debug (std::ostream * debug_os);
-
+    
   }
 }
 
