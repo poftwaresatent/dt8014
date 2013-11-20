@@ -14,10 +14,10 @@ void cb_draw ()
   set_pen (1.0, 0.5, 0.5, 0.5);
   fill_arc (-1.0, 0.0, 1.0, 0.0, 2 * M_PI);
   
-  set_pen (1.0, 1.0, 0.0, 0.0); // width, red, green, blue
+  set_pen (2.0, 1.0, 0.0, 0.0); // width, red, green, blue
   draw_line (0.0, 0.0, 1.0, 0.0); // x0, y0, x1, y1
   
-  set_pen (1.0, 0.0, 1.0, 0.0);
+  set_pen (3.0, 0.0, 1.0, 0.0);
   draw_line (0.0, 0.0, 0.0, 1.0);
   
   set_pen (1.0, 0.0, 0.0, 1.0);

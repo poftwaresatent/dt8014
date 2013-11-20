@@ -69,6 +69,10 @@ namespace dt8014 {
 			   GdkEventExpose * ee,
 			   gpointer data)
     {
+      if (dbgos) {
+	*dbgos << __func__ << "\n";
+      }
+      
       cairo = gdk_cairo_create (ee->window);
   
       cairo_set_source_rgb (cairo, 1.0, 1.0, 1.0);
@@ -160,12 +164,15 @@ namespace dt8014 {
 
     void set_pen (double width, double red, double green, double blue)
     {
+      if (dbgos) {
+	*dbgos << __func__ << "  " << width
+	       << "  " << red << "  " << green << "  " << blue << "\n";
+      }
       if (!cairo) {
 	return;
       }
       cairo_set_source_rgb (cairo, red, green, blue);
-      ////  cairo_set_line_width (cairo, width / canvas_sx);
-      cairo_set_line_width (cairo, 1.0);
+      cairo_set_line_width (cairo, width);
     }
 
 
