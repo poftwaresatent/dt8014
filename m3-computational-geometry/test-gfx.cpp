@@ -48,5 +48,5 @@ int main (int argc, char ** argv)
 {
   gfx_debug (&cout);
   gfx_add_button ("click", cb_click);
-  gfx_main (cb_draw);
+  gfx_main (cb_draw, "test-gfx");
 }

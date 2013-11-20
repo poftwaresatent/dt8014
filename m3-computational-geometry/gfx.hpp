@@ -28,7 +28,7 @@ void gfx_fill_arc (double cx, double cy, double rr, double a0, double a1);
    gets called each time the scene should be drawn. Inside the
    draw_callback, use the various other gfx_ functions to actually
    draw things. */
-void gfx_main (void (*draw_callback)());
+void gfx_main (void (*draw_callback)(), std::string const & window_title);
 
 std::ostream * gfx_debug (std::ostream * debug_os);
 

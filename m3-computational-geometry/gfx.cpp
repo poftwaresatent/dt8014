@@ -197,7 +197,7 @@ void gfx_fill_arc (double cx, double cy, double rr, double a0, double a1)
 }
 
 
-void gfx_main (void (*draw_callback)())
+void gfx_main (void (*draw_callback)(), std::string const & window_title)
 {
   GtkWidget *window, *vbox, *hbox, *btn;
   
@@ -210,6 +210,7 @@ void gfx_main (void (*draw_callback)())
   cairo = 0;
   
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title ((GtkWindow*) window, window_title.c_str());
   
   vbox = gtk_vbox_new (FALSE, 0);
   gtk_container_add (GTK_CONTAINER (window), vbox);
