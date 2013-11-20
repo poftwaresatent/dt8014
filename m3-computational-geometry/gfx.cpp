@@ -193,9 +193,9 @@ namespace dt8014 {
       canvas_x0 = (canvas_width - (view_x1 - view_x0) * canvas_sx) / 2;
       canvas_y0 = canvas_height - (canvas_height + (view_y1 - view_y0) * canvas_sy) / 2;
       
-      if (0 != canvas) {
-	gtk_widget_queue_draw (canvas);
-      }
+      // if (0 != canvas) {
+      // 	gtk_widget_queue_draw (canvas);
+      // }
     }
 
 
@@ -278,7 +278,7 @@ namespace dt8014 {
       
       if (dbgos) {
 	*dbgos << __func__ << "  " << bb->x << " -> " << c2vx (bb->x) << "  " << bb->y
-	       << " -> " << c2vy (bb->y) << " " << (gdk_flags_t) bb->state
+	       << " -> " << c2vy (bb->y) << "  " << (gdk_flags_t) bb->state
 	       << " -> " << (mouse_flags_t) flags << "\n";
       }
       
@@ -300,7 +300,7 @@ namespace dt8014 {
       
       if (dbgos) {
 	*dbgos << __func__ << "  " << mx << " -> " << c2vx (mx) << "  " << my
-	       << " -> " << c2vy (my) << " " << (gdk_flags_t) ee->state
+	       << " -> " << c2vy (my) << "  " << (gdk_flags_t) ee->state
                << " -> " << (mouse_flags_t) flags << "\n";
       }
       
@@ -325,9 +325,9 @@ namespace dt8014 {
 
     void set_view (double x0, double y0, double x1, double y1)
     {
-      if (dbgos) {
-	*dbgos << __func__ << "  " << x0 << "  " << y0 << "  " << x1 << "  " << y1 << "\n";
-      }
+      // if (dbgos) {
+      // 	*dbgos << __func__ << "  " << x0 << "  " << y0 << "  " << x1 << "  " << y1 << "\n";
+      // }
       reconf_v2c (canvas_width, canvas_height, x0, y0, x1, y1);
     }
 
