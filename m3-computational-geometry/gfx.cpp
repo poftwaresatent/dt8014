@@ -138,9 +138,9 @@ namespace dt8014 {
 			   GdkEventExpose * ee,
 			   gpointer data)
     {
-      if (dbgos) {
-	*dbgos << __func__ << "\n";
-      }
+      // if (dbgos) {
+      // 	*dbgos << __func__ << "\n";
+      // }
       
       cairo = gdk_cairo_create (ee->window);
   
@@ -221,44 +221,43 @@ namespace dt8014 {
     }
     
     
-    template<typename GdkEventType>
-    int convert_flags (GdkEventType * ee)
+    int convert_flags (int state, int button)
     {
       int flags (0);
-      if (ee->state & GDK_SHIFT_MASK) {
+      if (state & GDK_SHIFT_MASK) {
 	flags |= MOUSE_SHIFT;
       }
-      if (ee->state & GDK_CONTROL_MASK) {
+      if (state & GDK_CONTROL_MASK) {
 	flags |= MOUSE_CTRL;
       }
-      if (ee->state & GDK_MOD1_MASK) {
+      if (state & GDK_MOD1_MASK) {
 	flags |= MOUSE_MOD1;
       }
-      if (ee->state & GDK_MOD2_MASK) {
+      if (state & GDK_MOD2_MASK) {
 	flags |= MOUSE_MOD2;
       }
-      if (ee->state & GDK_MOD3_MASK) {
+      if (state & GDK_MOD3_MASK) {
 	flags |= MOUSE_MOD3;
       }
-      if (ee->state & GDK_MOD4_MASK) {
+      if (state & GDK_MOD4_MASK) {
 	flags |= MOUSE_MOD4;
       }
-      if (ee->state & GDK_MOD5_MASK) {
+      if (state & GDK_MOD5_MASK) {
 	flags |= MOUSE_MOD5;
       }
-      if (ee->state & GDK_BUTTON1_MASK) {
+      if (state & GDK_BUTTON1_MASK || 1 == button) {
 	flags |= MOUSE_B1;
       }
-      if (ee->state & GDK_BUTTON2_MASK) {
+      if (state & GDK_BUTTON2_MASK || 2 == button) {
 	flags |= MOUSE_B2;
       }
-      if (ee->state & GDK_BUTTON3_MASK) {
+      if (state & GDK_BUTTON3_MASK || 3 == button) {
 	flags |= MOUSE_B3;
       }
-      if (ee->state & GDK_BUTTON4_MASK) {
+      if (state & GDK_BUTTON4_MASK || 4 == button) {
 	flags |= MOUSE_B4;
       }
-      if (ee->state & GDK_BUTTON5_MASK) {
+      if (state & GDK_BUTTON5_MASK || 5 == button) {
 	flags |= MOUSE_B5;
       }
       return flags;
@@ -269,7 +268,7 @@ namespace dt8014 {
 				GdkEventButton * bb,
 				gpointer data)
     {
-      int flags (convert_flags (bb));
+      int flags (convert_flags (bb->state, bb->button));
       if (bb->type == GDK_BUTTON_PRESS) {
 	flags |= MOUSE_PRESS;
       }
@@ -297,7 +296,7 @@ namespace dt8014 {
       GdkModifierType modifier;
       gdk_window_get_pointer(ww->window, &mx, &my, &modifier);
 
-      int flags (convert_flags (ee) | MOUSE_DRAG);
+      int flags (convert_flags (ee->state, -1) | MOUSE_DRAG);
       
       if (dbgos) {
 	*dbgos << __func__ << "  " << mx << " -> " << c2vx (mx) << "  " << my
@@ -305,7 +304,7 @@ namespace dt8014 {
                << " -> " << (mouse_flags_t) flags << "\n";
       }
       
-      mouse_cb (c2vx (mx), c2vy (my), MOUSE_DRAG);
+      mouse_cb (c2vx (mx), c2vy (my), flags);
       gtk_widget_queue_draw (canvas);
       
       return TRUE;
@@ -335,10 +334,10 @@ namespace dt8014 {
 
     void set_pen (double width, double red, double green, double blue)
     {
-      if (dbgos) {
-	*dbgos << __func__ << "  " << width
-	       << "  " << red << "  " << green << "  " << blue << "\n";
-      }
+      // if (dbgos) {
+      // 	*dbgos << __func__ << "  " << width
+      // 	       << "  " << red << "  " << green << "  " << blue << "\n";
+      // }
       if (!cairo) {
 	return;
       }
