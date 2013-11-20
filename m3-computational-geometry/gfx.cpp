@@ -4,11 +4,19 @@
 #include <vector>
 
 
+namespace {
+  typedef enum {
+    FAKE
+  } gdk_flags_t;
+}
+
+
 namespace std {
   
   ostream & operator << (ostream & os, dt8014::gfx::mouse_flags_t const & flags)
   {
-    os << (flags & dt8014::gfx::MOUSE_PRESS ? "Press-" : "")
+    os << "["
+       << (flags & dt8014::gfx::MOUSE_PRESS ? "Press-" : "")
        << (flags & dt8014::gfx::MOUSE_RELEASE ? "Release-" : "")
        << (flags & dt8014::gfx::MOUSE_DRAG ? "Drag-" : "")
        << (flags & dt8014::gfx::MOUSE_SHIFT ? "Shift-" : "")
@@ -22,7 +30,29 @@ namespace std {
        << (flags & dt8014::gfx::MOUSE_B2 ? "B2" : "")
        << (flags & dt8014::gfx::MOUSE_B3 ? "B3" : "")
        << (flags & dt8014::gfx::MOUSE_B4 ? "B4" : "")
-       << (flags & dt8014::gfx::MOUSE_B5 ? "B5" : "");
+       << (flags & dt8014::gfx::MOUSE_B5 ? "B5" : "")
+       << "]";
+    return os;
+  }
+  
+  
+  ostream & operator << (ostream & os, gdk_flags_t const & flags)
+  {
+    os << "["
+       << (flags & GDK_SHIFT_MASK ? "Shift-" : "")
+       << (flags & GDK_LOCK_MASK ? "Lock-" : "")
+       << (flags & GDK_CONTROL_MASK ? "Ctrl-" : "")
+       << (flags & GDK_MOD1_MASK ? "M1-" : "")
+       << (flags & GDK_MOD2_MASK ? "M2-" : "")
+       << (flags & GDK_MOD3_MASK ? "M3-" : "")
+       << (flags & GDK_MOD4_MASK ? "M4-" : "")
+       << (flags & GDK_MOD5_MASK ? "M5-" : "")
+       << (flags & GDK_BUTTON1_MASK ? "B1" : "")
+       << (flags & GDK_BUTTON2_MASK ? "B2" : "")
+       << (flags & GDK_BUTTON3_MASK ? "B3" : "")
+       << (flags & GDK_BUTTON4_MASK ? "B4" : "")
+       << (flags & GDK_BUTTON5_MASK ? "B5" : "")
+       << "]";
     return os;
   }
   
@@ -249,7 +279,8 @@ namespace dt8014 {
       
       if (dbgos) {
 	*dbgos << __func__ << "  " << bb->x << " -> " << c2vx (bb->x) << "  " << bb->y
-	       << " -> " << c2vy (bb->y) << " " << (mouse_flags_t) flags << "\n";
+	       << " -> " << c2vy (bb->y) << " " << (gdk_flags_t) bb->state
+	       << " -> " << (mouse_flags_t) flags << "\n";
       }
       
       mouse_cb (c2vx (bb->x), c2vy (bb->y), flags);
@@ -270,7 +301,8 @@ namespace dt8014 {
       
       if (dbgos) {
 	*dbgos << __func__ << "  " << mx << " -> " << c2vx (mx) << "  " << my
-	       << " -> " << c2vy (my) << " " << (mouse_flags_t) flags << "\n";
+	       << " -> " << c2vy (my) << " " << (gdk_flags_t) ee->state
+               << " -> " << (mouse_flags_t) flags << "\n";
       }
       
       mouse_cb (c2vx (mx), c2vy (my), MOUSE_DRAG);
