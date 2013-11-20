@@ -24,24 +24,23 @@ namespace dt8014 {
     void set_view (double x0, double y0, double x1, double y1);
     
     /*
-      Only has an effect inside a draw_callback.
+      The following functions only have an effect inside a draw_callback.
     */
     void set_pen (double width, double red, double green, double blue);
     
-    /*
-      Only has an effect inside a draw_callback.
-    */
+    void draw_point (double x, double y);
+    
     void draw_line (double x0, double y0, double x1, double y1);
     
-    /*
-      Only has an effect inside a draw_callback.
-    */
     void draw_arc (double cx, double cy, double rr, double a0, double a1);
     
-    /*
-      Only has an effect inside a draw_callback.
-    */
     void fill_arc (double cx, double cy, double rr, double a0, double a1);
+    
+    void begin_poly (double x, double y);
+    
+    void add_poly (double x, double y);
+    
+    void end_poly ();
     
     /*
       Any extra buttons need to be set up before calling main() by

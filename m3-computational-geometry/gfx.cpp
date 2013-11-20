@@ -220,8 +220,19 @@ namespace dt8014 {
       cairo_set_source_rgb (cairo, red, green, blue);
       cairo_set_line_width (cairo, width);
     }
-
-
+    
+    
+    void draw_point (double x, double y)
+    {
+      if (!cairo) {
+	return;
+      }
+      cairo_move_to (cairo, v2cx(x), v2cy(y));
+      cairo_close_path (cairo);
+      cairo_stroke (cairo);
+    }
+    
+    
     void draw_line (double x0, double y0, double x1, double y1)
     {
       if (!cairo) {
@@ -251,8 +262,35 @@ namespace dt8014 {
       cairo_arc (cairo, v2cx(cx), v2cy(cy), v2cr(rr), a0, a1);
       cairo_fill (cairo);
     }
-
-
+    
+    
+    void begin_poly (double x, double y)
+    {
+      if (!cairo) {
+	return;
+      }
+      cairo_move_to (cairo, v2cx(x), v2cy(y));
+    }
+    
+    
+    void add_poly (double x, double y)
+    {
+      if (!cairo) {
+	return;
+      }
+      cairo_line_to (cairo, v2cx(x), v2cy(y));
+    }
+    
+    
+    void end_poly ()
+    {
+      if (!cairo) {
+	return;
+      }
+      cairo_stroke (cairo);
+    }
+    
+    
     void main (std::string const & window_title,
 	       void (*draw_callback)(),
 	       void (*mouse_callback)(double px, double py, mouse_event_t ee))

@@ -34,7 +34,6 @@ void cb_draw ()
 
 void cb_mouse (double px, double py, mouse_event_t ee)
 {
-  cout << "BLAHABLAH\n";
   switch (ee) {
   case MOUSE_PRESS:
     mx0 = px;
