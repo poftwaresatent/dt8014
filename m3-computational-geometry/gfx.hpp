@@ -40,7 +40,9 @@ namespace dt8014 {
     
     void add_poly (double x, double y);
     
-    void end_poly ();
+    void draw_poly ();
+    
+    void fill_poly ();
     
     /*
       Any extra buttons need to be set up before calling main() by

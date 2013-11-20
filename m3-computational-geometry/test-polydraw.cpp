@@ -20,16 +20,20 @@ static list<Point> points;
 void cb_draw ()
 {
   switch (points.size()) {
+
   case 0:
     break;
+
   case 1:
     set_pen (4.0, red, green, blue);
     draw_point (points.front().x, points.front().y);
     break;
+
   case 2:
-    set_pen (1.0, red, green, blue);
+    set_pen (2.0, red, green, blue);
     draw_line (points.front().x, points.front().y, points.back().x, points.back().y);
     break;
+
   default:
     set_pen (1.0, red, green, blue);
     auto ip (points.begin());
@@ -37,7 +41,14 @@ void cb_draw ()
     for (++ip; ip != points.end(); ++ip) {
       add_poly (ip->x, ip->y);
     }
-    end_poly ();
+    fill_poly ();
+    set_pen (2.0, red / 2, green / 2, blue / 2);
+    ip = points.begin();
+    begin_poly (ip->x, ip->y);
+    for (++ip; ip != points.end(); ++ip) {
+      add_poly (ip->x, ip->y);
+    }
+    draw_poly ();
   }
 }
 
@@ -81,6 +92,9 @@ void cb_blue ()
 
 int main (int argc, char ** argv)
 {
+  red = 0.5;
+  green = 0.5;
+  blue = 0.5;
   debug (&cout);
   add_button ("red", cb_red);
   add_button ("green", cb_green);

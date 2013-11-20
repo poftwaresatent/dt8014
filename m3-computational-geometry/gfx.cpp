@@ -91,7 +91,15 @@ namespace dt8014 {
       cairo_set_source_rgb (cairo, 1.0, 1.0, 1.0);
       cairo_rectangle (cairo, 0, 0, canvas_width, canvas_height);
       cairo_fill (cairo);
-  
+      
+      /*
+	The round line cap style is required for drawing points. It
+	may be better to have that switched to and from square
+	depending on what we draw, but for now it is easier to just
+	globally have round line caps everywhere.
+      */
+      cairo_set_line_cap (cairo, CAIRO_LINE_CAP_ROUND);
+      
       draw_cb ();
   
       cairo_destroy (cairo);
@@ -128,8 +136,10 @@ namespace dt8014 {
       }
       canvas_x0 = (canvas_width - (view_x1 - view_x0) * canvas_sx) / 2;
       canvas_y0 = canvas_height - (canvas_height + (view_y1 - view_y0) * canvas_sy) / 2;
-  
-      gtk_widget_queue_draw (canvas);
+      
+      if (0 != canvas) {
+	gtk_widget_queue_draw (canvas);
+      }
     }
 
 
@@ -151,6 +161,7 @@ namespace dt8014 {
     static void cb_click (GtkWidget * ww, gpointer data)
     {
       reinterpret_cast<Button*>(data)->callback_();
+      gtk_widget_queue_draw (canvas);
     }
     
     
@@ -224,11 +235,14 @@ namespace dt8014 {
     
     void draw_point (double x, double y)
     {
+      if (dbgos) {
+	*dbgos << __func__ << "  " << x << "  " << y << "\n";
+      }
       if (!cairo) {
 	return;
       }
       cairo_move_to (cairo, v2cx(x), v2cy(y));
-      cairo_close_path (cairo);
+      cairo_line_to (cairo, v2cx(x), v2cy(y));
       cairo_stroke (cairo);
     }
     
@@ -282,12 +296,21 @@ namespace dt8014 {
     }
     
     
-    void end_poly ()
+    void draw_poly ()
     {
       if (!cairo) {
 	return;
       }
       cairo_stroke (cairo);
+    }
+    
+    
+    void fill_poly ()
+    {
+      if (!cairo) {
+	return;
+      }
+      cairo_fill (cairo);
     }
     
     
