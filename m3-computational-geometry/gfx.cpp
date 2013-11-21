@@ -138,9 +138,9 @@ namespace dt8014 {
 			   GdkEventExpose * ee,
 			   gpointer data)
     {
-      // if (dbgos) {
-      // 	*dbgos << __func__ << "\n";
-      // }
+      if (dbgos) {
+      	*dbgos << __func__ << "\n";
+      }
       
       cairo = gdk_cairo_create (ee->window);
   
@@ -216,6 +216,9 @@ namespace dt8014 {
 
     static void cb_click (GtkWidget * ww, gpointer data)
     {
+      if (dbgos) {
+	*dbgos << __func__ << "  " << reinterpret_cast<Button*>(data)->label_ << "\n";
+      }
       reinterpret_cast<Button*>(data)->callback_();
       gtk_widget_queue_draw (canvas);
     }
@@ -325,19 +328,19 @@ namespace dt8014 {
 
     void set_view (double x0, double y0, double x1, double y1)
     {
-      // if (dbgos) {
-      // 	*dbgos << __func__ << "  " << x0 << "  " << y0 << "  " << x1 << "  " << y1 << "\n";
-      // }
+      if (dbgos) {
+      	*dbgos << __func__ << "  " << x0 << "  " << y0 << "  " << x1 << "  " << y1 << "\n";
+      }
       reconf_v2c (canvas_width, canvas_height, x0, y0, x1, y1);
     }
 
 
     void set_pen (double width, double red, double green, double blue)
     {
-      // if (dbgos) {
-      // 	*dbgos << __func__ << "  " << width
-      // 	       << "  " << red << "  " << green << "  " << blue << "\n";
-      // }
+      if (dbgos) {
+      	*dbgos << __func__ << "  " << width
+      	       << "  " << red << "  " << green << "  " << blue << "\n";
+      }
       if (!cairo) {
 	return;
       }
