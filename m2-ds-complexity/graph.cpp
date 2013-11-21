@@ -132,7 +132,7 @@ namespace dt8014 {
 	for (++ii; ii != ie->second->via_.end(); ++ii) {
 	  os << ", " << *ii;
 	}
-	os << "\",len=4"
+	os << "\",len=5"
 	   << (iv->second->value_ < 0 ? ",style=dotted];\n" :
 	       (ie->second->dst_.back_ == ie->second ? ",style=bold];\n" :
 		"];\n"));
@@ -163,7 +163,7 @@ namespace dt8014 {
 	for (auto kk (ii->second.begin()); kk != ii->second.end(); ++kk) {
 	  if (jj != kk) {
 	    edge (*jj, *kk, ii->first);
-	    cout << *jj << " -> " << ii->first << " -> " << *kk << "\n";
+	    // cout << *jj << " -> " << ii->first << " -> " << *kk << "\n";
 	  }
 	}
       }

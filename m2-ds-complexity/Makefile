@@ -3,7 +3,10 @@ CXXFLAGS = -std=c++11 -stdlib=libc++ -Wall -O0 -g
 
 PROGRAMS = hashbench rbtreebench
 
-all: graph.o
+all: test-graph
+
+test-graph: test-graph.o graph.o Makefile
+	$(CXX) $(CXXFLAGS) -o test-graph test-graph.o graph.o
 
 programs:
 	for prg in $(PROGRAMS); \
