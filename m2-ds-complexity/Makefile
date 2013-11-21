@@ -1,9 +1,11 @@
 CXX = clang++
 CXXFLAGS = -std=c++11 -stdlib=libc++ -Wall -O0 -g
 
-PROGRAMS = $(shell ls *.cpp | sed 's:\.cpp$$::')
+PROGRAMS = hashbench rbtreebench
 
-all:
+all: graph.o
+
+programs:
 	for prg in $(PROGRAMS); \
 	do \
 	  $(MAKE) recurse PRG=$$prg; \
