@@ -1,5 +1,8 @@
+// in eclipse: add -std=c++11 
+// on windows, need different random function
+
 #include <stdlib.h>
-#include <err.h>
+#include <err.h>		// not on windows, but add stdio.h
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/time.h>
