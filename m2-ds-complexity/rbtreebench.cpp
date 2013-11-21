@@ -1,12 +1,55 @@
+/* Halmstad University Algorithms Course Code Examples.
+ *
+ * Copyright (C) 2013 Roland Philippsen. All rights reserved.
+ *
+ * BSD license:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the copyright holder nor the names of
+ *    contributors to this software may be used to endorse or promote
+ *    products derived from this software without specific prior written
+ *    permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR THE CONTRIBUTORS TO THIS SOFTWARE BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+   \file rbtreebench.cpp
+   
+   Simple benchmark for STL red-black trees.
+   
+   \note To compile this file, you need to enable C++11 support. For
+   example under Eclipse with CDT, you have to add "-std=c++11" to the
+   GCC command line.
+*/
+
 #include <stdlib.h>
-#include <err.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <sys/time.h>
 
 #include <set>
 #include <list>
 
+
+/* Quickly hacked replacement for the UNIX err function which should
+   work in this specific program also under Windows. */
+static void err (int exit_code, char const * format, char const * rest);
 
 /* Returns a random integer in the specified range. */
 static int random_int (int minval, int maxval);
@@ -86,40 +129,26 @@ int main (int argc, char ** argv)
 
 int random_int (int minval, int maxval)
 {
-  static int fd = -1;
-  unsigned int delta, tmp, mask;
-  
-  if (0 > fd && 0 > (fd = open ("/dev/urandom", O_RDONLY))) {
-    err (EXIT_FAILURE, __FILE__": %s: open /dev/urandom", __func__);
+  static struct timeval t0 = { 0, 0 };
+  if (0 == t0.tv_sec) {
+    if (0 != gettimeofday (&t0, NULL)) {
+      err (EXIT_FAILURE, __FILE__": %s: gettimeofday", __func__);
+    }
+    srand (t0.tv_usec);
   }
   
   if (maxval < minval) {
-    tmp = minval;
+    int tmp = minval;
     minval = maxval;
     maxval = tmp;
   }
+  
+  int delta;
   if (0 == (delta = maxval - minval)) {
     return minval;
   }
   
-  for (tmp = 1 << (8 * sizeof(int) - 1); 0 == (tmp & delta); tmp >>= 1) {
-    /* nop */;
-  }
-  for (mask = tmp; 0 != tmp; tmp >>= 1) {
-    mask |= tmp;
-  }
-  
-  for (;;) {
-    if (sizeof(int) != read (fd, &tmp, sizeof(int))) {
-      err (EXIT_FAILURE, __FILE__": %s: read /dev/urandom", __func__);
-    }
-    tmp &= mask;
-    if (tmp <= delta) {
-      break;
-    }
-  }
-  
-  return minval + tmp;
+  return minval + rand () % (delta + 1);
 }
 
 
@@ -138,4 +167,11 @@ double clockms (void)
   }
   
   return 1e3 * (t1.tv_sec - t0.tv_sec) + 1e-3 * (t1.tv_usec - t0.tv_usec);
+}
+
+
+void err (int exit_code, char const * format, char const * rest)
+{
+  fprintf (stderr, format, rest);
+  exit (exit_code);
 }
