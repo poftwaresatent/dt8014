@@ -1,4 +1,4 @@
-/* Halmstad University Algorithms Course Example Library.
+/* Halmstad University Algorithms Course Code Examples.
  *
  * Copyright (C) 2013 Roland Philippsen. All rights reserved.
  *
