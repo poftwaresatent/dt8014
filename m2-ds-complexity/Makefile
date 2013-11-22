@@ -1,9 +1,9 @@
 CXX = clang++
 CXXFLAGS = -std=c++11 -stdlib=libc++ -Wall -O0 -g
 
-PROGRAMS = hashbench rbtreebench
+PROGRAMS = hashbench rbtreebench test-alt
 
-all: test-graph
+all: programs
 
 test-graph: test-graph.o graph.o Makefile
 	$(CXX) $(CXXFLAGS) -o test-graph test-graph.o graph.o
