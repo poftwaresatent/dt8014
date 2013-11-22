@@ -19,7 +19,7 @@ int main (int argc, char ** argv)
   unordered_map <string, unordered_set <string>> graph;
   
   while (getline (ds, character, '\t')) {
-    if ( !getline (ds, book, '\t')) {
+    if ( !getline (ds, book, '\n')) {
       break;
     }
     graph[character].insert (book);
