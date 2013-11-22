@@ -7,6 +7,22 @@
 
 using namespace std;
 
+
+static string chop (string const & in)
+{
+  size_t beg (0);
+  size_t len (in.size());
+  while (in[beg] == '"' || in[beg] == ' ') {
+    ++beg;
+    --len;
+  }
+  while (in[beg+len-1] == '"' || in[beg+len-1] == ' ') {
+    --len;
+  }
+  return in.substr (beg, len);
+}
+
+
 int main (int argc, char ** argv)
 {
   if (argc < 4) {
@@ -22,6 +38,8 @@ int main (int argc, char ** argv)
     if ( !getline (ds, book, '\n')) {
       break;
     }
+    character = chop (character);
+    book = chop (book);
     graph[character].insert (book);
     graph[book].insert (character);
   }
@@ -29,7 +47,7 @@ int main (int argc, char ** argv)
   cout << "parsed graph:\n";
   for (auto iv (graph.begin()); iv != graph.end(); ++iv) {
     for (auto ie (iv->second.begin()); ie != iv->second.end(); ++ie) {
-      cout << "  \"" << iv->first << "\" -> \"" << *ie << "\"\n";
+      cout << "  {" << iv->first << "} -> {" << *ie << "}\n";
     }
   }
   
@@ -46,7 +64,7 @@ int main (int argc, char ** argv)
     
     auto ifrom (graph.find (queue.front()));
     if (ifrom == graph.end()) {
-      cerr << "ERROR queue item \"" << queue.front() << "\" not found in graph\n";
+      cerr << "ERROR queue item {" << queue.front() << "} not found in graph\n";
       return 42;
     }
     
@@ -70,7 +88,7 @@ int main (int argc, char ** argv)
   }
   
   if ( !found) {
-    cout << "no path from \"" << src << "\" to \"" << dst << "\"\n";
+    cout << "no path from {" << src << "} to {" << dst << "}\n";
     return 0;
   }
   
@@ -79,8 +97,8 @@ int main (int argc, char ** argv)
   for (auto iback (back.find (dst)); iback != back.end(); iback = back.find (iback->second)) {
     queue.push_front (iback->second);
   }
-  cout << "the path from \"" << src << "\" to \"" << dst << "\" takes " << queue.size() << " steps\n";
+  cout << "the path from {" << src << "} to {" << dst << "} takes " << queue.size() << " steps\n";
   for (auto ipath (queue.begin()); ipath != queue.end(); ++ipath) {
-    cout << "  " << *ipath << "\n";
+    cout << "  {" << *ipath << "}\n";
   }
 }
