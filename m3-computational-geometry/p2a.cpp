@@ -3,6 +3,7 @@
 #include <iostream>
 #include <set>
 #include <list>
+#include <vector>
 
 
 using namespace dt8014::gfx;
@@ -25,13 +26,24 @@ class Handle
 {
 public:
   Handle (double x, double y, double r, Color const & c)
-    : xx (x), yy (y), rr (r), cc (c)
+    : xx (x), yy (y), rr (r), dx (0.0), dy (0.0), cc (c)
   {
   }
   
-  double pdist (double px, double py) const
+  bool grab (double mx, double my)
   {
-    return sqrt (pow (px - xx, 2.0) + pow (py - yy, 2.0));
+    if (sqrt (pow (mx - xx, 2.0) + pow (my - yy, 2.0)) <= rr) {
+      dx = xx - mx;
+      dy = yy - my;
+      return true;
+    }
+    return false;
+  }
+  
+  void move (double mx, double my)
+  {
+    xx = mx + dx;
+    yy = my + dy;
   }
   
   void draw () const
@@ -40,7 +52,7 @@ public:
     fill_arc (xx, yy, rr, 0.0, 2 * M_PI);
   }
   
-  double xx, yy, rr;
+  double xx, yy, rr, dx, dy;
   Color cc;
 };
 
@@ -75,8 +87,8 @@ public:
       qq (qx, qy, 0.1, c),
       cc (c)
   {
-    pp.cc.aa *= 0.5;
-    qq.cc.aa *= 0.5;
+    pp.cc.aa *= 0.25;
+    qq.cc.aa *= 0.25;
     handles.insert (&pp);
     handles.insert (&qq);
   }
@@ -113,7 +125,7 @@ public:
   
   void draw () const
   {
-    set_pen (3.0, cc.rr, cc.gg, cc.bb, cc.aa);
+    set_pen (1.0, cc.rr, cc.gg, cc.bb, cc.aa);
     draw_line (pp.xx, pp.yy, qq.xx, qq.yy);
   }
   
@@ -137,52 +149,57 @@ void cb_draw ()
     for (++jl; jl != lines.end(); ++jl) {
       double px, py;
       if ((*il)->intersect (**jl, px, py)) {
-	set_pen (1.0, 0.5, 0.5, 1.0, 1.0);
-	draw_arc (px, py, 0.05, 0.0, 2 * M_PI);
+	set_pen (1.0, 1.0, 0.0, 0.0, 1.0);
+	draw_arc (px, py, 0.03, 0.0, 2 * M_PI);
       }
     }
   }
 }
 
 
-void cb_mouse (double px, double py, int flags)
+static vector<Color> colors;
+
+
+void cb_mouse (double mx, double my, int flags)
 {
   if (flags & MOUSE_PRESS) {
     
     for (auto ih (handles.begin()); ih != handles.end(); ++ih) {
-      if ((*ih)->pdist (px, py) < (*ih)->rr) {
-	(*ih)->xx = px;
-	(*ih)->yy = py;
+      if ((*ih)->grab (mx, my)) {
 	grabbed = (*ih);
 	break;
       }
     }
     
+    if (0 == grabbed) {
+      lines.push_back (new Line (mx, my, mx, my, colors[lines.size() % colors.size()]));
+      grabbed = &lines.back()->qq;
+    }
+    
   }
   
   else if (flags & MOUSE_DRAG) {
-    
-    if (0 != grabbed) {
-      grabbed->xx = px;
-      grabbed->yy = py;
-    }
-    
+    grabbed->move (mx, my);
   }
   
   else if (flags & MOUSE_RELEASE) {
-    
-    if (0 != grabbed) {
-      grabbed = 0;
-    }
-    
+    grabbed = 0;
   }
 }
 
 
 int main (int argc, char ** argv)
 {
-  lines.push_back (new Line (-0.5, -0.5,  -0.5, 0.5, Color (0.5, 0.0, 0.0)));
-  lines.push_back (new Line ( 0.5, -0.5,   0.5, 0.5, Color (0.0, 0.5, 0.0)));
+  colors.push_back (Color (0.0, 0.0, 0.5));
+  colors.push_back (Color (0.0, 0.5, 0.0));
+  colors.push_back (Color (0.0, 0.5, 0.5));
+  colors.push_back (Color (0.5, 0.0, 0.0));
+  colors.push_back (Color (0.5, 0.0, 0.5));
+  colors.push_back (Color (0.5, 0.5, 0.0));
+  
+  lines.push_back (new Line (-0.5, -0.5,  -0.5, 0.5, colors[lines.size() % colors.size()]));
+  lines.push_back (new Line ( 0.5, -0.5,   0.5, 0.5, colors[lines.size() % colors.size()]));
+  
   main (argv[0], cb_draw, cb_mouse);
   for (auto il (lines.begin()); il != lines.end(); ++il) {
     delete *il;
