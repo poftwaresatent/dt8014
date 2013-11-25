@@ -11,23 +11,23 @@ static double mx0, my0, mx1, my1;
 
 void cb_draw ()
 {
-  set_pen (1.0, 0.0, 0.0, 0.0);
+  set_pen (1.0, 0.0, 0.0, 0.0, 1.0); // width, red, green, blue, alpha
   draw_arc (1.0, 0.0, 1.0, 0.0, 2 * M_PI);
   
-  set_pen (1.0, 0.5, 0.5, 0.5);
+  set_pen (1.0, 0.5, 0.5, 0.5, 1.0);
   fill_arc (-1.0, 0.0, 1.0, 0.0, 2 * M_PI);
   
-  set_pen (1.0, 1.0, 0.0, 0.0); // width, red, green, blue
-  draw_line (0.0, 0.0, 1.0, 0.0); // x0, y0, x1, y1
+  set_pen (1.0, 1.0, 0.0, 0.0, 1.0);
+  draw_line (0.0, 0.0, 1.0, 0.0);
   
-  set_pen (1.0, 0.0, 1.0, 0.0);
+  set_pen (1.0, 0.0, 1.0, 0.0, 1.0);
   draw_line (0.0, 0.0, 0.0, 1.0);
   
-  set_pen (1.0, 0.0, 0.0, 1.0);
+  set_pen (1.0, 0.0, 0.0, 1.0, 1.0);
   draw_line (0.0, 0.0, 1.0, 1.0);
   draw_line (1.0, 0.0, 0.0, 1.0);
   
-  set_pen (3.0, 0.5, 0.0, 0.0);
+  set_pen (3.0, 0.5, 0.0, 0.0, 1.0);
   draw_line (mx0, my0, mx1, my1);
 }
 

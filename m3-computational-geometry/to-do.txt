@@ -4,3 +4,4 @@ definitely:
 maybe:
 - add keystroke callback
 - add standard menu callback handling (open, save, save as, quit)
+- add alpha channel to color spec

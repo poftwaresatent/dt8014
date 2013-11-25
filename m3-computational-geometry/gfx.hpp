@@ -117,7 +117,7 @@ namespace dt8014 {
       
       \note Only works when called from within your a draw callback.
     */
-    void set_pen (double width, double red, double green, double blue);
+    void set_pen (double width, double red, double green, double blue, double alpha);
     
     
     /**

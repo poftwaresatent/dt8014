@@ -37,24 +37,24 @@ void cb_draw ()
     break;
 
   case 1:
-    set_pen (4.0, red, green, blue);
+    set_pen (4.0, red, green, blue, 1.0);
     draw_point (points.front().x, points.front().y);
     break;
 
   case 2:
-    set_pen (2.0, red, green, blue);
+    set_pen (2.0, red, green, blue, 1.0);
     draw_line (points.front().x, points.front().y, points.back().x, points.back().y);
     break;
 
   default:
-    set_pen (1.0, red, green, blue);
+    set_pen (1.0, red, green, blue, 1.0);
     auto ip (points.begin());
     begin_poly (ip->x, ip->y);
     for (++ip; ip != points.end(); ++ip) {
       add_poly (ip->x, ip->y);
     }
     fill_poly ();
-    set_pen (2.0, red / 2, green / 2, blue / 2);
+    set_pen (2.0, red / 2, green / 2, blue / 2, 1.0);
     ip = points.begin();
     begin_poly (ip->x, ip->y);
     for (++ip; ip != points.end(); ++ip) {
@@ -64,7 +64,7 @@ void cb_draw ()
   }
   
   if (zooming) {
-    set_pen (1.0, 0.5, 0.5, 0.5);
+    set_pen (1.0, 0.5, 0.5, 0.5, 1.0);
     draw_line (zoom.x0, zoom.y0, zoom.x1, zoom.y0);
     draw_line (zoom.x1, zoom.y0, zoom.x1, zoom.y1);
     draw_line (zoom.x1, zoom.y1, zoom.x0, zoom.y1);

@@ -367,16 +367,16 @@ namespace dt8014 {
     }
 
 
-    void set_pen (double width, double red, double green, double blue)
+    void set_pen (double width, double red, double green, double blue, double alpha)
     {
       if (dbgos) {
       	*dbgos << __func__ << "  " << width
-      	       << "  " << red << "  " << green << "  " << blue << "\n";
+      	       << "  " << red << "  " << green << "  " << blue << "  " << alpha << "\n";
       }
       if (!cairo) {
 	return;
       }
-      cairo_set_source_rgb (cairo, red, green, blue);
+      cairo_set_source_rgba (cairo, red, green, blue, alpha);
       cairo_set_line_width (cairo, width);
     }
     
