@@ -40,6 +40,24 @@ static set<Handle*> handles;
 static Handle * grabbed (0);
 
 
+static size_t solve (double a1, double a2,
+		     double b1, double b2,
+		     double k1, double k2,
+		     double &x, double &y)
+{
+  static double const epsilon (1.0e-4);
+  double const dd (a1 * b2 - a2 * b1);
+  double const db (k1 * b2 - k2 * b1);
+  double const da (a1 * k2 - a2 * k1);
+  if (fabs (dd) < epsilon) {
+    return fabs (db) < epsilon && fabs (da) < epsilon ? 2 : 0;
+  }
+  x = db / dd;
+  y = da / dd;
+  return 1;
+}
+
+
 class Line
 {
 public:
@@ -64,8 +82,22 @@ public:
   
   bool intersect (Line const & other, double & px, double & py) const
   {
-    px = 0.0;
-    py = 0.0;
+    double alpha, beta;
+    size_t const result (solve (hp_.px_ - hq_.px_,
+				hp_.py_ - hq_.py_,
+				other.hq_.px_ - other.hp_.px_,
+				other.hq_.py_ - other.hp_.py_,
+				other.hq_.px_ - hq_.px_,
+				other.hq_.py_ - hq_.py_,
+				alpha, beta));
+    if (result != 1) {
+      return false;
+    }
+    if (alpha < 0.0 || alpha > 1.0 || beta < 0.0 || beta > 1.0) {
+      return false;
+    }
+    px = alpha * hp_.px_ + (1.0 - alpha) * hq_.px_;
+    py = alpha * hp_.py_ + (1.0 - alpha) * hq_.py_;
     return true;
   }
   
@@ -86,17 +118,20 @@ static list<Line*> lines;
 void cb_draw ()
 {
   set_view (-1.0, -1.0, 1.0, 1.0);
-  cout << "cb_draw handles";
   for (auto ih (handles.begin()); ih != handles.end(); ++ih) {
-    cout << ".";
     (*ih)->draw();
   }
-  cout << " lines";
   for (auto il (lines.begin()); il != lines.end(); ++il) {
-    cout << ".";
     (*il)->draw();
+    auto jl (il);
+    for (++jl; jl != lines.end(); ++jl) {
+      double px, py;
+      if ((*il)->intersect (**jl, px, py)) {
+	set_pen (1.0, 0.5, 0.5, 1.0, 1.0);
+	draw_arc (px, py, 0.05, 0.0, 2 * M_PI);
+      }
+    }
   }
-  cout << "\n";
 }
 
 
