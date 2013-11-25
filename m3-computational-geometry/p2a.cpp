@@ -9,30 +9,40 @@ using namespace dt8014::gfx;
 using namespace std;
 
 
+class Color
+{
+public:
+  Color (double r, double g, double b, double a = 1.0)
+    : rr (r), gg (g), bb (b), aa (a)
+  {
+  }
+  
+  double rr, gg, bb, aa;
+};
+
+
 class Handle
 {
 public:
-  Handle (double px, double py, double radius,
-	  double red, double green, double blue)
-    : px_(px), py_(py), radius_(radius),
-      red_(red), green_(green), blue_(blue)
+  Handle (double x, double y, double r, Color const & c)
+    : xx (x), yy (y), rr (r), cc (c)
   {
   }
   
   double pdist (double px, double py) const
   {
-    return sqrt (pow (px - px_, 2.0) + pow (py - py_, 2.0));
+    return sqrt (pow (px - xx, 2.0) + pow (py - yy, 2.0));
   }
   
   void draw () const
   {
-    cout << "draw handle " << px_ << "  " << py_ << "  " << radius_ << "\n";
-    set_pen (1.0, red_, green_, blue_, 0.5);
-    fill_arc (px_, py_, radius_, 0.0, 2 * M_PI);
+    cout << "draw handle " << xx << "  " << yy << "  " << rr << "\n";
+    set_pen (1.0, cc.rr, cc.gg, cc.bb, cc.aa);
+    fill_arc (xx, yy, rr, 0.0, 2 * M_PI);
   }
   
-  double px_, py_, radius_;
-  double red_, green_, blue_;
+  double xx, yy, rr;
+  Color cc;
 };
 
 
@@ -46,14 +56,14 @@ static size_t solve (double a1, double a2,
 		     double &x, double &y)
 {
   static double const epsilon (1.0e-4);
-  double const dd (a1 * b2 - a2 * b1);
-  double const db (k1 * b2 - k2 * b1);
-  double const da (a1 * k2 - a2 * k1);
-  if (fabs (dd) < epsilon) {
-    return fabs (db) < epsilon && fabs (da) < epsilon ? 2 : 0;
+  double const det0 (a1 * b2 - a2 * b1);
+  double const det1 (k1 * b2 - k2 * b1);
+  double const det2 (a1 * k2 - a2 * k1);
+  if (fabs (det0) < epsilon) {
+    return fabs (det1) < epsilon && fabs (det2) < epsilon ? 2 : 0;
   }
-  x = db / dd;
-  y = da / dd;
+  x = det1 / det0;
+  y = det2 / det0;
   return 1;
 }
 
@@ -61,34 +71,35 @@ static size_t solve (double a1, double a2,
 class Line
 {
 public:
-  Line (double px, double py, double qx, double qy,
-	double red, double green, double blue)
-    : hp_(px, py, 0.1, red, green, blue),
-      hq_(qx, qy, 0.1, red, green, blue),
-      red_(red), green_(green), blue_(blue)
+  Line (double px, double py, double qx, double qy, Color const & c)
+    : pp (px, py, 0.1, c),
+      qq (qx, qy, 0.1, c),
+      cc (c)
   {
-    handles.insert (&hp_);
-    handles.insert (&hq_);
+    pp.cc.aa *= 0.5;
+    qq.cc.aa *= 0.5;
+    handles.insert (&pp);
+    handles.insert (&qq);
   }
   
   ~Line ()
   {
-    if (grabbed == &hp_ || grabbed == &hq_) {
+    if (grabbed == &pp || grabbed == &qq) {
       grabbed = 0;
     }
-    handles.erase (&hp_);
-    handles.erase (&hq_);
+    handles.erase (&pp);
+    handles.erase (&qq);
   }
   
   bool intersect (Line const & other, double & px, double & py) const
   {
     double alpha, beta;
-    size_t const result (solve (hp_.px_ - hq_.px_,
-				hp_.py_ - hq_.py_,
-				other.hq_.px_ - other.hp_.px_,
-				other.hq_.py_ - other.hp_.py_,
-				other.hq_.px_ - hq_.px_,
-				other.hq_.py_ - hq_.py_,
+    size_t const result (solve (pp.xx - qq.xx,
+				pp.yy - qq.yy,
+				other.qq.xx - other.pp.xx,
+				other.qq.yy - other.pp.yy,
+				other.qq.xx - qq.xx,
+				other.qq.yy - qq.yy,
 				alpha, beta));
     if (result != 1) {
       return false;
@@ -96,19 +107,19 @@ public:
     if (alpha < 0.0 || alpha > 1.0 || beta < 0.0 || beta > 1.0) {
       return false;
     }
-    px = alpha * hp_.px_ + (1.0 - alpha) * hq_.px_;
-    py = alpha * hp_.py_ + (1.0 - alpha) * hq_.py_;
+    px = alpha * pp.xx + (1.0 - alpha) * qq.xx;
+    py = alpha * pp.yy + (1.0 - alpha) * qq.yy;
     return true;
   }
   
   void draw () const
   {
-    set_pen (3.0, red_, green_, blue_, 1.0);
-    draw_line (hp_.px_, hp_.py_, hq_.px_, hq_.py_);
+    set_pen (3.0, cc.rr, cc.gg, cc.bb, cc.aa);
+    draw_line (pp.xx, pp.yy, qq.xx, qq.yy);
   }
   
-  Handle hp_, hq_;
-  double red_, green_, blue_;
+  Handle pp, qq;
+  Color cc;
 };
 
 
@@ -142,10 +153,10 @@ void cb_mouse (double px, double py, int flags)
   if (flags & MOUSE_PRESS) {
     
     for (auto ih (handles.begin()); ih != handles.end(); ++ih) {
-      if ((*ih)->pdist (px, py) < (*ih)->radius_) {
+      if ((*ih)->pdist (px, py) < (*ih)->rr) {
 	cout << "grabbed\n";
-	(*ih)->px_ = px;
-	(*ih)->py_ = py;
+	(*ih)->xx = px;
+	(*ih)->yy = py;
 	grabbed = (*ih);
 	break;
       }
@@ -160,8 +171,8 @@ void cb_mouse (double px, double py, int flags)
     
     if (0 != grabbed) {
       cout << "dragged\n";
-      grabbed->px_ = px;
-      grabbed->py_ = py;
+      grabbed->xx = px;
+      grabbed->yy = py;
     }
     
     else {
@@ -187,8 +198,8 @@ void cb_mouse (double px, double py, int flags)
 
 int main (int argc, char ** argv)
 {
-  lines.push_back (new Line (-0.5, -0.5,  -0.5, 0.5,  0.5, 0.0, 0.0));
-  lines.push_back (new Line ( 0.5, -0.5,   0.5, 0.5,  0.0, 0.5, 0.0));
+  lines.push_back (new Line (-0.5, -0.5,  -0.5, 0.5, Color (0.5, 0.0, 0.0)));
+  lines.push_back (new Line ( 0.5, -0.5,   0.5, 0.5, Color (0.0, 0.5, 0.0)));
   main (argv[0], cb_draw, cb_mouse);
   for (auto il (lines.begin()); il != lines.end(); ++il) {
     delete *il;
