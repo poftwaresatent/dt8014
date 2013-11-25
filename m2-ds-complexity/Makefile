@@ -1,12 +1,9 @@
 CXX = clang++
 CXXFLAGS = -std=c++11 -stdlib=libc++ -Wall -O0 -g
 
-PROGRAMS = hashbench rbtreebench test-alt
+PROGRAMS = hashbench rbtreebench p1-simplistic
 
 all: programs
-
-test-graph: test-graph.o graph.o Makefile
-	$(CXX) $(CXXFLAGS) -o test-graph test-graph.o graph.o
 
 programs:
 	for prg in $(PROGRAMS); \
