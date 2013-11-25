@@ -36,7 +36,6 @@ public:
   
   void draw () const
   {
-    cout << "draw handle " << xx << "  " << yy << "  " << rr << "\n";
     set_pen (1.0, cc.rr, cc.gg, cc.bb, cc.aa);
     fill_arc (xx, yy, rr, 0.0, 2 * M_PI);
   }
@@ -148,21 +147,15 @@ void cb_draw ()
 
 void cb_mouse (double px, double py, int flags)
 {
-  cout << "cb_mouse " << px << "  " << py << ": ";
-  
   if (flags & MOUSE_PRESS) {
     
     for (auto ih (handles.begin()); ih != handles.end(); ++ih) {
       if ((*ih)->pdist (px, py) < (*ih)->rr) {
-	cout << "grabbed\n";
 	(*ih)->xx = px;
 	(*ih)->yy = py;
 	grabbed = (*ih);
 	break;
       }
-    }
-    if (0 == grabbed) {
-      cout << "nothing to grab\n";
     }
     
   }
@@ -170,13 +163,8 @@ void cb_mouse (double px, double py, int flags)
   else if (flags & MOUSE_DRAG) {
     
     if (0 != grabbed) {
-      cout << "dragged\n";
       grabbed->xx = px;
       grabbed->yy = py;
-    }
-    
-    else {
-      cout << "nothing to drag\n";
     }
     
   }
@@ -184,12 +172,7 @@ void cb_mouse (double px, double py, int flags)
   else if (flags & MOUSE_RELEASE) {
     
     if (0 != grabbed) {
-      cout << "released\n";
       grabbed = 0;
-    }
-    
-    else {
-      cout << "nothing to release\n";
     }
     
   }
