@@ -31,18 +31,23 @@ on Linux, easy on Mac OS X, and apparently quite easy on Windows.
   manager.  You will need the development version in case your
   distribution distinguishes it from the runtime package.  For
   example, under Debian just run `sudo apt-get install libgtk2.0-dev`.
-* Under [Macports][], setting up GTK+ is as easy as typing `sudo port
-  install gtk2` on the command line.
+* For Mac OS X, the recommended way is to use [Macports][].  This
+  simplifies the GTK+ setup, all you then need is `sudo port install
+  gtk2`.
 * Under Windows, there appear to be two commonly used setups.  One is
-  to rely on the [Cygwin][] setup (which may be used behind the scenes
-  if you have set up Eclipse with CDT), the other one is to follow the
-  [Win32 instructions][] on the GTK homepage.  Note that you will need
-  the **GTK+ 2.x** files, and that there is an all-in-one bundle that
-  should give you all the dependencies as well.
+  to rely on [Cygwin][] (which may be used behind the scenes if you
+  have set up Eclipse with CDT -- but that does not mean it will be
+  easy to extend with your needs for this course).  The other
+  alternative is to follow the [Win32 instructions][] on the GTK
+  homepage (this sounds easier but I did not try it).  Note that you
+  will need to scroll down the page to the **GTK+ 2.x** files, and
+  that there is an all-in-one bundle that should give you all the
+  dependencies as well.
 
 Try to first compile and run the `test-gfx.cpp` and the
 `test-polydraw.cpp` examples from the `m3-computational-geometry`
-directory.  To make sense of the code, read the comments in `gfx.hpp`.
+directory.  To make sense of the code, read the comments there and in
+`gfx.hpp`.
 
 The line intersection program illustrated during the lecture is called
 `example-line-intersection.cpp`.  It allows you to drag line segment
@@ -51,15 +56,16 @@ source code is also intended to serve as starting point for your
 project, illustrating how to manage user interaction.
 
 Finally, note that everything you find here has been developed on OS X
-under Macports using the Clang compiler, so you may very well need to
-adjust some things here and there, especially if you work under
-Windows.  Please do feel free to submit [issues][], [patches][], or
-[pull requests][].
+under Macports using the [clang++][] compiler, so you may very well
+need to adjust some things here and there.  Especially if you work
+under Windows.  Please do feel free to submit [issues][], [patches][],
+or preferably [pull requests][].
 
 [GTK+]: http://www.gtk.org/
 [Macports]: http://www.macports.org/
 [Cygwin]: http://www.cygwin.com/
 [Win32 instructions]: http://www.gtk.org/download/win32.php
+[clang++]: http://clang.llvm.org/
 [issues]: https://github.com/poftwaresatent/algocourse/issues
 [patches]: http://en.wikipedia.org/wiki/Patch_(Unix)
 [pull requests]: https://help.github.com/articles/using-pull-requests
