@@ -1,6 +1,6 @@
 CXX = clang++
 CXXFLAGS = -std=c++11 -stdlib=libc++ -Wall -O0 -g `pkg-config --cflags gtk+-2.0`
-PROGRAMS = test-gfx test-polydraw p2a
+PROGRAMS = test-gfx test-polydraw example-line-intersection
 
 all:
 	for prg in $(PROGRAMS); \
@@ -17,4 +17,4 @@ clean:
 gfx.o: gfx.cpp gfx.hpp Makefile
 test-gfx.o: test-gfx.cpp gfx.hpp Makefile
 test-polydraw.o: test-polydraw.cpp gfx.hpp Makefile
-p2a.o: p2a.cpp gfx.hpp Makefile
+example-line-intersection.o: example-line-intersection.cpp gfx.hpp Makefile

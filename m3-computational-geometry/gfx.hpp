@@ -41,14 +41,14 @@
    
    The basic approach is that you register various callback functions
    via function pointers.  Thus, for each custom button, you specify a
-   separate function to dt8014::gfx::add_button.  This function will
+   separate function to gfx::add_button.  This function will
    get called when the corresponding button is clicked.  Similarly,
    your custom mouse callback is specified as a function pointer to
-   the dt8014::gfx::main.  Your custom drawing function gets
+   the gfx::main.  Your custom drawing function gets
    registered there as well.  Various functions are provided so that
    you can draw shapes on the GUI.
    
-   The dt8014::gfx::main function gets called as the last action in
+   The gfx::main function gets called as the last action in
    your program.  it sets up GTK for you and enters its event handling
    loop.  Examples that use this simplified GUI wrapper can be found
    in the same directory as this header file.
@@ -67,21 +67,21 @@ namespace gfx {
      data from various GDK and GTK event data structures.
   */
   typedef enum {
-    MOUSE_PRESS   = 1 <<  1,	/**< the mouse has been pressed */
-    MOUSE_RELEASE = 1 <<  2,	/**< the mouse has been release */
-    MOUSE_DRAG    = 1 <<  3,	/**< the mouse has been dragged */
-    MOUSE_B1      = 1 <<  4,	/**< mouse button 1 is involved (usually the left one) */
-    MOUSE_B2      = 1 <<  5,	/**< mouse button 2 is involved (usually the right one) */
-    MOUSE_B3      = 1 <<  6,  /**< mouse button 3 is involved */
-    MOUSE_B4      = 1 <<  7,  /**< mouse button 4 is involved */
-    MOUSE_B5      = 1 <<  8,  /**< mouse button 5 is involved */
-    MOUSE_SHIFT   = 1 <<  9,  /**< Shift was held down when the mouse was pressed */
-    MOUSE_CTRL    = 1 << 10,  /**< Control was held down when the mouse was pressed */
-    MOUSE_MOD1    = 1 << 11,  /**< Modifier key 1 (usually Alt) was held down */
-    MOUSE_MOD2    = 1 << 12,  /**< Modifier key 2 was held down */
-    MOUSE_MOD3    = 1 << 13,  /**< Modifier key 3 was held down */
-    MOUSE_MOD4    = 1 << 14,  /**< Modifier key 4 was held down */
-    MOUSE_MOD5    = 1 << 15   /**< Modifier key 5 was held down */
+    MOUSE_PRESS   = 1 <<  1, /**< the mouse has been pressed */
+    MOUSE_RELEASE = 1 <<  2, /**< the mouse has been release */
+    MOUSE_DRAG    = 1 <<  3, /**< the mouse has been dragged */
+    MOUSE_B1      = 1 <<  4, /**< button 1 is involved (that usually is the left one) */
+    MOUSE_B2      = 1 <<  5, /**< button 2 is involved (that usually is the right one) */
+    MOUSE_B3      = 1 <<  6, /**< button 3 is involved */
+    MOUSE_B4      = 1 <<  7, /**< button 4 is involved */
+    MOUSE_B5      = 1 <<  8, /**< button 5 is involved */
+    MOUSE_SHIFT   = 1 <<  9, /**< Shift was held down when the mouse was pressed */
+    MOUSE_CTRL    = 1 << 10, /**< Control was held down when the mouse was pressed */
+    MOUSE_MOD1    = 1 << 11, /**< Modifier key 1 (usually Alt) was held down */
+    MOUSE_MOD2    = 1 << 12, /**< Modifier key 2 was held down */
+    MOUSE_MOD3    = 1 << 13, /**< Modifier key 3 was held down */
+    MOUSE_MOD4    = 1 << 14, /**< Modifier key 4 was held down */
+    MOUSE_MOD5    = 1 << 15  /**< Modifier key 5 was held down */
   } mouse_flags_t;
     
     
@@ -91,7 +91,7 @@ namespace gfx {
      button is clicked.
       
      \note This function has to be called /before/ you call
-     dt8014::gfx::main.
+     gfx::main.
   */
   void add_button (std::string const & label, void (*click_callback)());
     
@@ -150,7 +150,7 @@ namespace gfx {
     
     
   /**
-     Similar to dt8014::gfx::draw_arc, but instead of an outline it
+     Similar to gfx::draw_arc, but instead of an outline it
      fills the specified circular arc using the current pen
      settings.
        
@@ -172,7 +172,7 @@ namespace gfx {
     
   /**
      Continue drawing a polygon that was started with
-     dt8014::gfx::begin_poly.
+     gfx::begin_poly.
        
      \note Only works when called from within your a draw callback.
   */
@@ -201,7 +201,7 @@ namespace gfx {
      Set up the GUI and enter its event processing loop.  You have
      to specify valid function pointers for the draw_callback and
      the mouse_callback.  Any extra buttons need to be set up before
-     by calling dt8014::gfx::add_button.
+     by calling gfx::add_button.
        
      The given draw_callback function called each time the scene
      should be drawn. Inside the draw_callback, use the various
@@ -212,9 +212,9 @@ namespace gfx {
      this happened is passed as (px, py) to your mouse callback.
      The transformation from pixel coordinates to your view
      coordinates are done for you, based on the latest settings that
-     you gave to the dt8014::gfx::set_view function.  The flags
+     you gave to the gfx::set_view function.  The flags
      passed to the mouse callback are a bitwise-or of the
-     dt8014::gfx::mouse_flags_t type.  You can thus find out which
+     gfx::mouse_flags_t type.  You can thus find out which
      button was pressed or dragged or so, and also whether any
      modifier keys (such as Shift of Control) were pressed.
        
