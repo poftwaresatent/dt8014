@@ -5,7 +5,7 @@
 #include <algorithm>
 
 using namespace std;
-using namespace dt8014::gfx;
+using namespace gfx;
 
 
 struct Point {

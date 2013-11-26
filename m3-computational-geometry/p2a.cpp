@@ -6,7 +6,7 @@
 #include <vector>
 
 
-using namespace dt8014::gfx;
+using namespace gfx;
 using namespace std;
 
 

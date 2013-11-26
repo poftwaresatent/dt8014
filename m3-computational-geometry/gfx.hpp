@@ -59,186 +59,184 @@
 
 #include <string>
 
-namespace dt8014 {
-  namespace gfx {
+namespace gfx {
     
     
-    /**
-       Flags that contain information about mouse events.  Unifies
-       data from various GDK and GTK event data structures.
-    */
-    typedef enum {
-      MOUSE_PRESS   = 1 <<  1,	/**< the mouse has been pressed */
-      MOUSE_RELEASE = 1 <<  2,	/**< the mouse has been release */
-      MOUSE_DRAG    = 1 <<  3,	/**< the mouse has been dragged */
-      MOUSE_B1      = 1 <<  4,	/**< mouse button 1 is involved (usually the left one) */
-      MOUSE_B2      = 1 <<  5,	/**< mouse button 2 is involved (usually the right one) */
-      MOUSE_B3      = 1 <<  6,  /**< mouse button 3 is involved */
-      MOUSE_B4      = 1 <<  7,  /**< mouse button 4 is involved */
-      MOUSE_B5      = 1 <<  8,  /**< mouse button 5 is involved */
-      MOUSE_SHIFT   = 1 <<  9,  /**< Shift was held down when the mouse was pressed */
-      MOUSE_CTRL    = 1 << 10,  /**< Control was held down when the mouse was pressed */
-      MOUSE_MOD1    = 1 << 11,  /**< Modifier key 1 (usually Alt) was held down */
-      MOUSE_MOD2    = 1 << 12,  /**< Modifier key 2 was held down */
-      MOUSE_MOD3    = 1 << 13,  /**< Modifier key 3 was held down */
-      MOUSE_MOD4    = 1 << 14,  /**< Modifier key 4 was held down */
-      MOUSE_MOD5    = 1 << 15   /**< Modifier key 5 was held down */
-    } mouse_flags_t;
+  /**
+     Flags that contain information about mouse events.  Unifies
+     data from various GDK and GTK event data structures.
+  */
+  typedef enum {
+    MOUSE_PRESS   = 1 <<  1,	/**< the mouse has been pressed */
+    MOUSE_RELEASE = 1 <<  2,	/**< the mouse has been release */
+    MOUSE_DRAG    = 1 <<  3,	/**< the mouse has been dragged */
+    MOUSE_B1      = 1 <<  4,	/**< mouse button 1 is involved (usually the left one) */
+    MOUSE_B2      = 1 <<  5,	/**< mouse button 2 is involved (usually the right one) */
+    MOUSE_B3      = 1 <<  6,  /**< mouse button 3 is involved */
+    MOUSE_B4      = 1 <<  7,  /**< mouse button 4 is involved */
+    MOUSE_B5      = 1 <<  8,  /**< mouse button 5 is involved */
+    MOUSE_SHIFT   = 1 <<  9,  /**< Shift was held down when the mouse was pressed */
+    MOUSE_CTRL    = 1 << 10,  /**< Control was held down when the mouse was pressed */
+    MOUSE_MOD1    = 1 << 11,  /**< Modifier key 1 (usually Alt) was held down */
+    MOUSE_MOD2    = 1 << 12,  /**< Modifier key 2 was held down */
+    MOUSE_MOD3    = 1 << 13,  /**< Modifier key 3 was held down */
+    MOUSE_MOD4    = 1 << 14,  /**< Modifier key 4 was held down */
+    MOUSE_MOD5    = 1 << 15   /**< Modifier key 5 was held down */
+  } mouse_flags_t;
     
     
-    /**
-      Specify a custom button.  It will be labelled with the provided
-      string, and the provided function will be called each time the
-      button is clicked.
+  /**
+     Specify a custom button.  It will be labelled with the provided
+     string, and the provided function will be called each time the
+     button is clicked.
       
-      \note This function has to be called /before/ you call
-      dt8014::gfx::main.
-    */
-    void add_button (std::string const & label, void (*click_callback)());
+     \note This function has to be called /before/ you call
+     dt8014::gfx::main.
+  */
+  void add_button (std::string const & label, void (*click_callback)());
     
     
-    /**
-       Specify which region of the planar coordinate system should be
-       drawn inside the GUI.  This sets up the transformation between
-       pixel coordinates (which change when the GUI gets resized, for
-       example) and the coordinates that you care about.
+  /**
+     Specify which region of the planar coordinate system should be
+     drawn inside the GUI.  This sets up the transformation between
+     pixel coordinates (which change when the GUI gets resized, for
+     example) and the coordinates that you care about.
        
-       \note The idea is for you to call set_view as one of the first
-       things in your draw callback.  When called from /outside/ your
-       draw callback, the GUI might not refresh automatically.
-    */
-    void set_view (double x0, double y0, double x1, double y1);
+     \note The idea is for you to call set_view as one of the first
+     things in your draw callback.  When called from /outside/ your
+     draw callback, the GUI might not refresh automatically.
+  */
+  void set_view (double x0, double y0, double x1, double y1);
     
     
-    /**
-      Specify the widh and the color of the pen with which to draw
-      things.  It affects all subsequent drawing functions.  The width
-      is specified in number of pixels.
+  /**
+     Specify the widh and the color of the pen with which to draw
+     things.  It affects all subsequent drawing functions.  The width
+     is specified in number of pixels.
       
-      \note Only works when called from within your a draw callback.
-    */
-    void set_pen (double width, double red, double green, double blue, double alpha);
+     \note Only works when called from within your a draw callback.
+  */
+  void set_pen (double width, double red, double green, double blue, double alpha);
     
     
-    /**
-       Draw a point with the current pen settings.  The size of the
-       point is determined by the 'width' parameter of set_pen.
+  /**
+     Draw a point with the current pen settings.  The size of the
+     point is determined by the 'width' parameter of set_pen.
       
-      \note Only works when called from within your a draw callback.
-    */
-    void draw_point (double x, double y);
+     \note Only works when called from within your a draw callback.
+  */
+  void draw_point (double x, double y);
     
     
-    /**
-       Draw a straight line segment from (x0, y0) to (x1, y1) using
-       the current pen settings.
+  /**
+     Draw a straight line segment from (x0, y0) to (x1, y1) using
+     the current pen settings.
        
-       \note Only works when called from within your a draw callback.
-    */
-    void draw_line (double x0, double y0, double x1, double y1);
+     \note Only works when called from within your a draw callback.
+  */
+  void draw_line (double x0, double y0, double x1, double y1);
     
     
-    /**
-       Draw an arc of circle with the current pen settings.  The
-       circle is centered at (cx, cy) and has radius rr.  The arc
-       starts at the angle a0 and is drawn to angle a1.  Angles are
-       specified in radians, and a0 must be smaller than a1 to avoid
-       wrapping effects.
+  /**
+     Draw an arc of circle with the current pen settings.  The
+     circle is centered at (cx, cy) and has radius rr.  The arc
+     starts at the angle a0 and is drawn to angle a1.  Angles are
+     specified in radians, and a0 must be smaller than a1 to avoid
+     wrapping effects.
        
-       \note Only works when called from within your a draw callback.
-    */
-    void draw_arc (double cx, double cy, double rr, double a0, double a1);
+     \note Only works when called from within your a draw callback.
+  */
+  void draw_arc (double cx, double cy, double rr, double a0, double a1);
     
     
-    /**
-       Similar to dt8014::gfx::draw_arc, but instead of an outline it
-       fills the specified circular arc using the current pen
-       settings.
+  /**
+     Similar to dt8014::gfx::draw_arc, but instead of an outline it
+     fills the specified circular arc using the current pen
+     settings.
        
-       \note Only works when called from within your a draw callback.
-    */
-    void fill_arc (double cx, double cy, double rr, double a0, double a1);
+     \note Only works when called from within your a draw callback.
+  */
+  void fill_arc (double cx, double cy, double rr, double a0, double a1);
     
     
-    /**
-       Start drawing a polygon at the given point, using current pen
-       settings. Call add_poly for each subsequent point, and when you
-       are done call draw_poly or fill_poly.
+  /**
+     Start drawing a polygon at the given point, using current pen
+     settings. Call add_poly for each subsequent point, and when you
+     are done call draw_poly or fill_poly.
        
-       \note Only works when called from within your a draw callback.
-       The pen settings should be given before begin_poly is called.
-    */
-    void begin_poly (double x, double y);
+     \note Only works when called from within your a draw callback.
+     The pen settings should be given before begin_poly is called.
+  */
+  void begin_poly (double x, double y);
     
     
-    /**
-       Continue drawing a polygon that was started with
-       dt8014::gfx::begin_poly.
+  /**
+     Continue drawing a polygon that was started with
+     dt8014::gfx::begin_poly.
        
-       \note Only works when called from within your a draw callback.
-    */
-    void add_poly (double x, double y);
+     \note Only works when called from within your a draw callback.
+  */
+  void add_poly (double x, double y);
     
     
-    /**
-       Finish drawing a polygon in outline mode.  Call this function
-       after an appropriate sequence of begin_poly and add_poly calls.
+  /**
+     Finish drawing a polygon in outline mode.  Call this function
+     after an appropriate sequence of begin_poly and add_poly calls.
        
-       \note Only works when called from within your a draw callback.
-    */
-    void draw_poly ();
+     \note Only works when called from within your a draw callback.
+  */
+  void draw_poly ();
     
     
-    /**
-       Finish drawing a polygon in filled mode.  Call this function
-       after an appropriate sequence of begin_poly and add_poly calls.
+  /**
+     Finish drawing a polygon in filled mode.  Call this function
+     after an appropriate sequence of begin_poly and add_poly calls.
        
-       \note Only works when called from within your a draw callback.
-    */
-    void fill_poly ();
+     \note Only works when called from within your a draw callback.
+  */
+  void fill_poly ();
     
     
-    /**
-       Set up the GUI and enter its event processing loop.  You have
-       to specify valid function pointers for the draw_callback and
-       the mouse_callback.  Any extra buttons need to be set up before
-       by calling dt8014::gfx::add_button.
+  /**
+     Set up the GUI and enter its event processing loop.  You have
+     to specify valid function pointers for the draw_callback and
+     the mouse_callback.  Any extra buttons need to be set up before
+     by calling dt8014::gfx::add_button.
        
-       The given draw_callback function called each time the scene
-       should be drawn. Inside the draw_callback, use the various
-       other functions to actually draw things.
+     The given draw_callback function called each time the scene
+     should be drawn. Inside the draw_callback, use the various
+     other functions to actually draw things.
        
-       Similarly, the given mouse_callback is called each time a mouse
-       button is pressed, released, or dragged.  The coordinates where
-       this happened is passed as (px, py) to your mouse callback.
-       The transformation from pixel coordinates to your view
-       coordinates are done for you, based on the latest settings that
-       you gave to the dt8014::gfx::set_view function.  The flags
-       passed to the mouse callback are a bitwise-or of the
-       dt8014::gfx::mouse_flags_t type.  You can thus find out which
-       button was pressed or dragged or so, and also whether any
-       modifier keys (such as Shift of Control) were pressed.
+     Similarly, the given mouse_callback is called each time a mouse
+     button is pressed, released, or dragged.  The coordinates where
+     this happened is passed as (px, py) to your mouse callback.
+     The transformation from pixel coordinates to your view
+     coordinates are done for you, based on the latest settings that
+     you gave to the dt8014::gfx::set_view function.  The flags
+     passed to the mouse callback are a bitwise-or of the
+     dt8014::gfx::mouse_flags_t type.  You can thus find out which
+     button was pressed or dragged or so, and also whether any
+     modifier keys (such as Shift of Control) were pressed.
        
-       \note This function only returns when the user has requested to
-       quit the application.
-    */
-    void main (std::string const & window_title,
-	       void (*draw_callback)(),
-	       void (*mouse_callback)(double px, double py, int flags));
+     \note This function only returns when the user has requested to
+     quit the application.
+  */
+  void main (std::string const & window_title,
+	     void (*draw_callback)(),
+	     void (*mouse_callback)(double px, double py, int flags));
     
     
-    /**
-       Control debug messages of this GUI wrapper.  By passing a
-       pointer to a valid std::ostream, you can capture those
-       messages.  If the given debug_os pointer is null (the default
-       setting), no debug messages will be generated.
+  /**
+     Control debug messages of this GUI wrapper.  By passing a
+     pointer to a valid std::ostream, you can capture those
+     messages.  If the given debug_os pointer is null (the default
+     setting), no debug messages will be generated.
        
-       \return The old debug_os pointer, in case you need to restore
-       it later.
-    */
-    std::ostream * debug (std::ostream * debug_os);
+     \return The old debug_os pointer, in case you need to restore
+     it later.
+  */
+  std::ostream * debug (std::ostream * debug_os);
     
-  }
 }
 
 #endif // DT8014_GFX_HPP

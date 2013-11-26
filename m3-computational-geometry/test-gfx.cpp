@@ -3,7 +3,7 @@
 #include <cmath>
 
 using namespace std;
-using namespace dt8014::gfx;
+using namespace gfx;
 
 
 static double mx0, my0, mx1, my1;
