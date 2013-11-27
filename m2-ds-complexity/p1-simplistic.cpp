@@ -80,6 +80,9 @@ int main (int argc, char ** argv)
     }
     character = chop (character);
     book = chop (book);
+    if (0 == character.size() || 0 == book.size()) {
+      continue;
+    }
     graph[character].insert (book);
     graph[book].insert (character);
   }
