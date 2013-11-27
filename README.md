@@ -21,9 +21,10 @@ everything here should be considered "under construction."
 Setup for Module 3 - Computational Geometry
 -------------------------------------------
 
-The work in module 3 relies on [GTK+][] (version 2) to provide a
-graphical user interface.  In order to minimize the learning curve, a
-simplified wrapper is provided via the
+The code in the `m3-computational-geometry` subdirectory serves as
+starting point for [project 2][].  It relies on [GTK+][] (version 2)
+to provide a graphical user interface.  In order to minimize the
+learning curve, a simplified wrapper is provided via the
 `m3-computational-geometry/gfx.hpp` file.  Installing GTK+ is trivial
 on Linux, easy on Mac OS X, and apparently quite easy on Windows.
 
@@ -34,15 +35,19 @@ on Linux, easy on Mac OS X, and apparently quite easy on Windows.
 * For Mac OS X, the recommended way is to use [Macports][].  This
   simplifies the GTK+ setup, all you then need is `sudo port install
   gtk2`.
-* Under Windows, there appear to be two commonly used setups.  One is
-  to rely on [Cygwin][] (which may be used behind the scenes if you
-  have set up Eclipse with CDT -- but that does not mean it will be
-  easy to extend with your needs for this course).  The other
-  alternative is to follow the [Win32 instructions][] on the GTK
-  homepage (this sounds easier but I did not try it).  Note that you
-  will need to scroll down the page to the **GTK+ 2.x** files, and
+
+* Under Windows, there appear to be two commonly used setups.  The
+  most promising (it has been used successfully by at least one of our
+  students with Codeblocks) approach is to follow the official [Win32
+  instructions][] on the GTK homepage (the 64 bit version can be
+  reached via their download tab at the top of the page).  Note that
+  you will need to scroll down the page to the **GTK+ 2.x** files, and
   that there is an all-in-one bundle that should give you all the
-  dependencies as well.
+  dependencies as well.  The other alternative is to rely on
+  [Cygwin][] which appears to be used behind the scenes if you have
+  set up Eclipse with CDT.  Googling for "cygwin install gtk+" seems
+  to turn up some potentially useful pages if you want to try this
+  option.
 
 Try to first compile and run the `test-gfx.cpp` and the
 `test-polydraw.cpp` examples from the `m3-computational-geometry`
@@ -61,6 +66,7 @@ need to adjust some things here and there.  Especially if you work
 under Windows.  Please do feel free to submit [issues][], [patches][],
 or preferably [pull requests][].
 
+[project 2]: https://docs.google.com/document/d/1C1Gs8qaBFTV1PkHLRUuLx_WAx8tviem3PDRAPJqlCFw/edit?pli=1#heading=h.d4zdbfz995a2
 [GTK+]: http://www.gtk.org/
 [Macports]: http://www.macports.org/
 [Cygwin]: http://www.cygwin.com/
