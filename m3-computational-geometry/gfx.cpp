@@ -207,11 +207,11 @@ namespace gfx {
     view_x1 = vx1;
     view_y1 = vy1;
   
-    canvas_sx = canvas_width / (view_x1 - view_x0);
+    canvas_sx = (gint) (canvas_width / (view_x1 - view_x0));
     if (canvas_sx < 1) {
       canvas_sx = 1;
     }
-    canvas_sy = - canvas_height / (view_y1 - view_y0);
+    canvas_sy = (gint) (- canvas_height / (view_y1 - view_y0));
     if ( - canvas_sy < 1) {
       canvas_sy = -1;
     }
@@ -221,8 +221,8 @@ namespace gfx {
     else {
       canvas_sy = - canvas_sx;
     }
-    canvas_x0 = (canvas_width - (view_x1 - view_x0) * canvas_sx) / 2;
-    canvas_y0 = canvas_height - (canvas_height + (view_y1 - view_y0) * canvas_sy) / 2;
+    canvas_x0 = (gint) ((canvas_width - (view_x1 - view_x0) * canvas_sx) / 2);
+    canvas_y0 = (gint) (canvas_height - (canvas_height + (view_y1 - view_y0) * canvas_sy) / 2);
       
     // if (0 != canvas) {
     // 	gtk_widget_queue_draw (canvas);
