@@ -48,7 +48,7 @@ void cb_draw ()
 
   default:
     set_pen (1.0, red, green, blue, 1.0);
-    auto ip (points.begin());
+    list<Point>::const_iterator ip (points.begin());
     begin_poly (ip->x, ip->y);
     for (++ip; ip != points.end(); ++ip) {
       add_poly (ip->x, ip->y);
@@ -131,7 +131,7 @@ void cb_zoom_fit ()
     view.y1 =  1.0;
   }
   else {
-    auto ip (points.begin());
+    list<Point>::const_iterator ip (points.begin());
     view.x0 = ip->x;
     view.y0 = ip->y;
     view.x1 = ip->x;

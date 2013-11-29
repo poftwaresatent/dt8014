@@ -140,12 +140,12 @@ static list<Line*> lines;
 void cb_draw ()
 {
   set_view (-1.0, -1.0, 1.0, 1.0);
-  for (auto ih (handles.begin()); ih != handles.end(); ++ih) {
+  for (set<Handle*>::const_iterator ih (handles.begin()); ih != handles.end(); ++ih) {
     (*ih)->draw();
   }
-  for (auto il (lines.begin()); il != lines.end(); ++il) {
+  for (list<Line*>::const_iterator il (lines.begin()); il != lines.end(); ++il) {
     (*il)->draw();
-    auto jl (il);
+    list<Line*>::const_iterator jl (il);
     for (++jl; jl != lines.end(); ++jl) {
       double px, py;
       if ((*il)->intersect (**jl, px, py)) {
@@ -164,7 +164,7 @@ void cb_mouse (double mx, double my, int flags)
 {
   if (flags & MOUSE_PRESS) {
     
-    for (auto ih (handles.begin()); ih != handles.end(); ++ih) {
+    for (set<Handle*>::iterator ih (handles.begin()); ih != handles.end(); ++ih) {
       if ((*ih)->grab (mx, my)) {
 	grabbed = (*ih);
 	break;
@@ -201,7 +201,7 @@ int main (int argc, char ** argv)
   lines.push_back (new Line ( 0.5, -0.5,   0.5, 0.5, colors[lines.size() % colors.size()]));
   
   main (argv[0], cb_draw, cb_mouse);
-  for (auto il (lines.begin()); il != lines.end(); ++il) {
+  for (list<Line*>::iterator il (lines.begin()); il != lines.end(); ++il) {
     delete *il;
   }
 }
