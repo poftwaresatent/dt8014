@@ -70,9 +70,9 @@ namespace gfx {
     MOUSE_PRESS   = 1 <<  1, /**< the mouse has been pressed */
     MOUSE_RELEASE = 1 <<  2, /**< the mouse has been release */
     MOUSE_DRAG    = 1 <<  3, /**< the mouse has been dragged */
-    MOUSE_B1      = 1 <<  4, /**< button 1 is involved (that usually is the left one) */
-    MOUSE_B2      = 1 <<  5, /**< button 2 is involved (that usually is the right one) */
-    MOUSE_B3      = 1 <<  6, /**< button 3 is involved */
+    MOUSE_B1      = 1 <<  4, /**< button 1 is involved (on Linux: left) */
+    MOUSE_B2      = 1 <<  5, /**< button 2 is involved (on Linux: middle) */
+    MOUSE_B3      = 1 <<  6, /**< button 3 is involved (on Linux: right) */
     MOUSE_B4      = 1 <<  7, /**< button 4 is involved */
     MOUSE_B5      = 1 <<  8, /**< button 5 is involved */
     MOUSE_SHIFT   = 1 <<  9, /**< Shift was held down when the mouse was pressed */
