@@ -32,6 +32,9 @@ on Linux, easy on Mac OS X, and apparently quite easy on Windows.
   manager.  You will need the development version in case your
   distribution distinguishes it from the runtime package.  For
   example, under Debian just run `sudo apt-get install libgtk2.0-dev`.
+  Notice that the workstations in Halmstad University's room B231c
+  have all the necessary packages to work with this.
+
 * For Mac OS X, the recommended way is to use [Macports][].  This
   simplifies the GTK+ setup, all you then need is `sudo port install
   gtk2`.
