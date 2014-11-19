@@ -1,0 +1,91 @@
+\documentclass[a4paper]{article}
+
+\usepackage{booktabs}
+\usepackage[margin=30mm]{geometry}
+\usepackage[format=hang,labelfont=it]{caption}
+
+
+
+\begin{document}
+\title{
+  \large
+  DT8014 Algorithms Exercise (2014)\\
+  \Large
+  Week 1 -- Stable Matching}
+\author{Roland Philippsen}
+\maketitle
+
+
+
+Imagine that there are $N$ students and $N$ projects proposed by local companies.
+Each student must do one project, and each project must be done by one student.
+Such a one-to-one assignment is called a \textbf{matching}.
+In order to be as fair as possible in assigning students to projects, it has been decided to proceed as follows.
+
+\begin{enumerate}
+\item
+  Each company talks with every student.
+\item
+  Each student lists all projects by preference, from their most to least favorite.
+\item
+  The companies do the same, listing the students by decreasing preference.
+\item
+  A professor receives all lists and figures out a so-called \textbf{stable matching}.
+  This means that no student and company would rather be paired with each other, rather than remain with the partners they have been assigned to.
+\end{enumerate}
+
+The concept of stable matching is rather subtle, so make sure you understand it.
+For example, assume you were paired with your second choice.
+Your favorite company was thus paired with someone else.
+If that other student comes before you in the company's preference list, then the pairing is still stable, because your favorite company has no reason to pair with you instead.
+If, however, your favorite company would \emph{also} prefer you over their currently assigned student, then the overall match would be unstable.
+
+In other words, if there exist even a single case where two non-paired parties would \emph{both} rather be with each other than with their current partners, we have an unstable matching.
+
+\begin{enumerate}
+
+\item
+  If you are given the preference lists and a suggested matching, how would you determine whether it is stable?
+  
+\item
+  How does your stability-checking algorithm scale with $N$?
+  
+\item
+  Given the following preference lists, figure out a stable matching.
+  The letters A---D denote students, and the numbers 1---4 are the companies.
+  
+  \begin{center}
+    \begin{tabular}{lllll}
+      \toprule
+      \multicolumn{5}{l}{student preference} \\
+      A: & 1 & 3 & 2 & 4 \\
+      B: & 3 & 4 & 1 & 2 \\
+      C: & 4 & 2 & 3 & 1 \\
+      D: & 3 & 2 & 1 & 4 \\
+      \bottomrule
+    \end{tabular}
+    \hspace{5mm}
+    \begin{tabular}{lllll}
+      \toprule
+      \multicolumn{5}{l}{company preference} \\
+      1: & B & A & C & D \\
+      2: & D & A & B & C \\
+      3: & A & C & B & D \\
+      4: & B & C & A & D \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  
+\item
+  Formulate your match-finding algorithm as pseudo code.
+  How does it scale with $N$?
+  
+  \emph{
+    Notice that you do not need to find an algorithm that is as fast as possible.
+    Just write your suggestion down formally, and assess its complexity.
+  }
+  
+\end{enumerate}
+
+
+\end{document}

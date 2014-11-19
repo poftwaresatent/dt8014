@@ -1,0 +1,11 @@
+graph undirectedgraph {
+	graph [layout=neato];
+	node [shape=circle];
+	B -- C [label="5"];
+	B -- E [label="4"];
+	D -- E [label="7"];
+	C -- D [label="2"];
+	C -- E [label="6"];
+	A -- B [label="3"];
+	A -- E [label="1"];
+}

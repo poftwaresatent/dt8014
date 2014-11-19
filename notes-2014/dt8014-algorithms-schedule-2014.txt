@@ -1,0 +1,138 @@
+DT8014 Algorithms Schedule (2014)
+=====================================
+Veronica Gaspes, Roland Philippsen, Slawomir Nowaczyk
+
+
+
+Overview
+--------
+
+[options="autowidth,header"]
+|========================================================================================
+| Week | Teacher  | Topic                          | Exercise / Project
+| 1    | Roland   | Overview, Motivating Examples  | E1: stable matching
+| 2    | Slawomir | Turing Machines                | E2: (?) forum thread
+| 3    | Roland   | Selected Graph Problems        | E3: implement digraph and BFS
+| 4    | Roland   | Randomization                  | P:  pick problem and approach
+| 5    | Veronica | Selected Proof Techniques      | P:  formulate algorithm
+| 6    | Veronica | Dynamic Programming            | P:  implement and analyse algorithm
+| 7    | Veronica | Greedy Search                  | P:  write and hand in report
+|=======================================================================================
+
+
+Exercise 1: Stable Matching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Reason about the decision and search versions of the stable matching problem.
+
+
+Exercise 2: Forum Thread (suggestion)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Students are given a list of questions that they should discuss and write a brief essay about, based on a forum thread about P, NP, NP-Complete, and NP-Hard problems.
+
+
+Exercise 3: Implement Digraph and BFS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Students choose their own preferred programming language and development setup, implement (or copy-paste-adapt) directed graphs, implement breadth-first search, and run it on a couple of examples to make sure everything works.
+
+
+Project: Apply Randomization to an Intractable Graph Problem
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Students choose a problem and a randomization approach, formulate their algorithm (inspired by lecture and web resources), implement it in their chosen language, analyze the performance of the algorithms, and write it all up in a report.
+
+The report has to use pseudo-code and focus on the mathematical formulations.  It will be evaluated based on structure, clarity, completeness, and how well the references are discussed.
+
+
+Contents
+--------
+
+
+Week 1: Overview, Motivating Examples (Roland)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Go over the syllabus with the students
+* Divide the class into 4 groups for the exercises and projects, schedule coaching slots
+* Introduce notion of checking vs. computing a solution to a problem
+** (directed) graphs intro, focus on formalization (as opposed to implementation)
+** topological order (easy to check and compute)
+** Hamiltonian cycles (easy to check, hard to compute in general)
+** *time permitting*: longest path (hard to check as well as compute)
+* *time permitting*: Review of algorithm complexity (from DA4002)
+* *time permitting*: Determine big-O complexity of the discussed algorithms
+
+*Take-home messages*:
+
+* Gaining a more theoretical understanding of computational problems is important for choosing and developing appropriate real-world solutions.
+* Becoming able to formally express problems and algorithms is an important prerequisite for gaining this theoretical understanding.
+
+
+Week 2: Turing Machines (Slawomir)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* deterministic vs non-deterministic TM
+* correspondence to the distinction between checking a solution vs coming up with one
+* problem complexity classes (P, NP, NP-Complete, NP-Hard)
+
+*Take-home message*:
+
+* Turing machines are one of the most fundamentally important concepts underlying the study of computational problems
+
+
+Week 3: Selected Graph Problems (Roland)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*(Under construction)*
+
+Make sure to illustrate the link to real-world problems in each of these.
+
+* shortest path
+* minimum spanning tree
+* TSP
+* task assignment via bipartitie graph labeling (Hungarian algorithm)
+* (assigning compatible pairs, triplets, ...)
+* (maybe maximum flow or related?)
+* Highlight different types of problems (already encountered, focus on tractability aspects):
+** decision
+** search
+** optimization
+
+*Take-home message*:
+
+* Graph theory provides an extremely rich repository of problems and solutions that are often highly relevant for practical applications.
+
+
+Week 4: Randomization (Roland)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*(Under construction)*
+
+Motivating problems: TSP, longest path
+
+* Simulated Annealing
+* Genetic Algorithms
+* Ant Colony Optimization
+
+*Take-home message*:
+
+* Intractable optimization problems can often be solved "well enough" with an appropriately designed and tuned randomized approach.
+
+
+Week 5: Selected Proof Techniques (Veronica)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Details to be defined.
+
+
+Week 6: Dynamic Programming (Veronica)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Details to be defined.
+
+
+Week 7: Greedy Search (Veronica)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Details to be defined.
