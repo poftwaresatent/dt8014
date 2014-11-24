@@ -40,6 +40,7 @@ import (
 	"time"
 	"encoding/json"
 	"os"
+	"io"
 	"io/ioutil"
 	"log"
 	"container/heap"
@@ -62,7 +63,8 @@ type Setup struct {
 	Nvertices int		// graph size (nominal -- you may get fewer vertices)
 	Dconnect float64	// distance at which to stop, if Nconnect has been reached
 	Nconnect int		// number of neighbors per vertex (nominal)
-	Format string		// either "gnuplot" or "adj"... maybe more later
+	Gnuplotfname string     // "" means do not generate, "-" is stdout, otherwise file fname
+	Adjfname string		// similar but for adjacency list output
 }
 
 
@@ -167,37 +169,46 @@ func DefaultSetup() Setup {
 	setup.Nvertices = 100
 	setup.Dconnect = 10.0
 	setup.Nconnect = 3
-	setup.Format = "gnuplot"
+	setup.Gnuplotfname = "-"
+	setup.Adjfname = ""
 	return setup
 }
 
 
 func CreateSetup() Setup {
 	setup := DefaultSetup()
-	for _, arg := range(os.Args[1:]) {
-		if arg[0] == '-' {
+	args := os.Args[1:]
+	for ia := 0; ia < len(args); ia += 1 {
+		if len(args[ia]) < 1 {
 			continue
 		}
-		msg, err := ioutil.ReadFile(arg)
-		if nil != err {
-			log.Fatal("reading ", arg, " failed: ", err)
-		}
-		err = json.Unmarshal(msg, &setup)
-		if nil != err {
-			log.Fatal("parsing ", arg, " failed: ", err)
-		}
-	}
-	for _, arg := range(os.Args[1:]) {
-		if arg[0] != '-' {
+		if args[ia][0] != '-' {
+			msg, err := ioutil.ReadFile(args[ia])
+			if nil != err {
+				log.Fatal("reading ", args[ia], " failed: ", err)
+			}
+			err = json.Unmarshal(msg, &setup)
+			if nil != err {
+				log.Fatal("parsing ", args[ia], " failed: ", err)
+			}
 			continue
 		}
-		if arg == "-g" {
-			setup.Format = "gnuplot"
-		} else if arg == "-a" {
-			setup.Format = "adj"
+		if args[ia] == "-g" {
+			if ia >= len(args) - 1 {
+				log.Fatal("missing gnuplot filename argument")
+			}
+			setup.Gnuplotfname = args[ia + 1]
+			ia += 1
+		} else if args[ia] == "-a" {
+			if ia >= len(args) - 1 {
+				log.Fatal("missing adjacency filename argument")
+			}
+			setup.Adjfname = args[ia + 1]
+			ia += 1
 		} else {
-			fmt.Println ("# WARNING skipped unknown option '", arg, "'")
+			log.Fatal("unknown option", args[ia])
 		}
+		
 	}
 	return setup
 }
@@ -266,17 +277,18 @@ func Sample(dimx, dimy float64, nsamples int, dsample float64, ntries int) []*No
 		for jj := 0; jj < ntries; jj += 1 {
 			px := rand.Float64() * dimx
 			py := rand.Float64() * dimy
-			retry := false
+			found := true
 			for kk := 0; kk < len(nodes); kk += 1 {
 				if math.Hypot(nodes[kk].px - px, nodes[kk].py - py) < dsample {
-					retry = true
+					found = false
 					break
 				}
 			}
-			if retry {
-				continue
+			if found {
+				nodes = append(nodes, &Node {
+					px: px, py: py, nbor: make(map[*Node]float64)})
+				break
 			}
-			nodes = append(nodes, &Node {px: px, py: py, nbor: make(map[*Node]float64)})
 		}
 	}
 	return nodes
@@ -321,41 +333,41 @@ func Connectify(graph []*Node, obstacles [][]float64, dconnect float64, nconnect
 }
 
 
-func OutputGnuplot(setup Setup, graph []*Node) {
-	fmt.Println("set view equal xy")
-	fmt.Println("set size ratio -1")
-	fmt.Printf("set xrange [0:%f]\n", setup.Dimx)
-	fmt.Printf("set yrange [0:%f]\n", setup.Dimy)
+func OutputGnuplot(ww io.Writer, setup Setup, graph []*Node) {
+	fmt.Fprintln(ww, "set view equal xy")
+	fmt.Fprintln(ww, "set size ratio -1")
+	fmt.Fprintf(ww, "set xrange [0:%f]\n", setup.Dimx)
+	fmt.Fprintf(ww, "set yrange [0:%f]\n", setup.Dimy)
 	
-	fmt.Println("plot '-' u 1:2 w l t '', '' u 1:2 w p t ''")
-	// fmt.Println("plot '-' u 1:2 w p t '', '' u 1:2 w l t '', '' u 1:2 w l t ''")
+	fmt.Fprintln(ww, "plot '-' u 1:2 w l t '', '' u 1:2 w p t ''")
+	// fmt.Fprintln(ww, "plot '-' u 1:2 w p t '', '' u 1:2 w l t '', '' u 1:2 w l t ''")
 	
-	// fmt.Println("# obstacles");
+	// fmt.Fprintln(ww, "# obstacles");
 	// for _, oo := range(setup.Obstacles) {
-	// 	fmt.Printf("% 5f  % 5f\n% 5f  % 5f\n\n\n", oo[0], oo[1], oo[2], oo[3])
+	// 	fmt.Fprintf(ww, "% 5f  % 5f\n% 5f  % 5f\n\n\n", oo[0], oo[1], oo[2], oo[3])
 	// }
-	// fmt.Println("e")
+	// fmt.Fprintln(ww, "e")
 	
-	fmt.Println("# edges");
+	fmt.Fprintln(ww, "# edges");
 	for _, nn := range(graph) {
 		for mm, _ := range nn.nbor {
-			fmt.Printf("% 5f  % 5f\n% 5f  % 5f\n\n\n", nn.px, nn.py, mm.px, mm.py)
+			fmt.Fprintf(ww, "% 5f  % 5f\n% 5f  % 5f\n\n\n", nn.px, nn.py, mm.px, mm.py)
 		}
 	}
-	fmt.Println("e")
+	fmt.Fprintln(ww, "e")
 
-	fmt.Println("# nodes");
+	fmt.Fprintln(ww, "# nodes");
 	for _, nn := range(graph) {
-		fmt.Printf("% 5f  % 5f\n", nn.px, nn.py)
+		fmt.Fprintf(ww, "% 5f  % 5f\n", nn.px, nn.py)
 	}
-	fmt.Println("e")
+	fmt.Fprintln(ww, "e")
 }
 
 
-func OutputAdj(setup Setup, graph []*Node) {
+func OutputAdj(ww io.Writer, setup Setup, graph []*Node) {
 	for _, nn := range(graph) {
 		for mm, dd := range(nn.nbor) {
-			fmt.Printf("(%f,%f)    (%f,%f)    %f\n", nn.px, nn.py, mm.px, mm.py, dd)
+			fmt.Fprintf(ww, "(%f,%f)    (%f,%f)    %f\n", nn.px, nn.py, mm.px, mm.py, dd)
 		}
 	}
 }
@@ -392,20 +404,34 @@ func main() {
 	Connectify(graph, setup.Obstacles, setup.Dconnect, setup.Nconnect)
 	
 	connected_components := Cluster(graph)
-	// fmt.Println("### there are", len(connected_components), "components with sizes")
 	biggest := make([]*Node, 0)
 	for _, cc := range(connected_components) {
-		// fmt.Println("###", len(cc))
 		if len(cc) > len(biggest) {
 			biggest = cc
-			// fmt.Println("### BIGGEST so far has size", len(cc))
 		}
 	}
 	
-	if setup.Format == "gnuplot" {
-		OutputGnuplot(setup, biggest)
-	} else if setup.Format == "adj" {
-		OutputAdj(setup, biggest)
+	if setup.Gnuplotfname == "-" {
+		OutputGnuplot(os.Stdout, setup, biggest)
+	} else if len(setup.Gnuplotfname) > 0 {
+		ff, err := os.OpenFile(setup.Gnuplotfname,
+			os.O_WRONLY | os.O_TRUNC | os.O_CREATE, 0660)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer ff.Close()
+		OutputGnuplot(ff, setup, biggest)
 	}
 	
+	if setup.Adjfname == "-" {
+		OutputAdj(os.Stdout, setup, biggest)
+	} else if len(setup.Adjfname) > 0 {
+		ff, err := os.OpenFile(setup.Adjfname,
+			os.O_WRONLY | os.O_TRUNC | os.O_CREATE, 0660)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer ff.Close()
+		OutputAdj(ff, setup, biggest)
+	}
 }

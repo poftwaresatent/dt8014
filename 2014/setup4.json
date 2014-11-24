@@ -8,8 +8,8 @@
 	[  45.0, 85.0,  70.0,  70.0 ],
 	[  70.0, 70.0,  75.0, 105.0 ]
     ],
-    "Nvertices": 100,
-    "Dconnect": 5.0,
+    "Nvertices": 500,
+    "Dconnect": 8.0,
     "Dsample": 2.0,
-    "Nconnect": 4
+    "Nconnect": 6
 }

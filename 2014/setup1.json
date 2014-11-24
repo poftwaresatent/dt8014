@@ -10,7 +10,8 @@
 	[  60.0, 40.0, 80.0, 20.0 ]
     ],
     "Nvertices": 1000,
-    "Dconnect": 10.0,
-    "Dsample": 5.0,
+    "Ntries": 1000,
+    "Dconnect": 4.0,
+    "Dsample": 2.0,
     "Nconnect": 2
 }
