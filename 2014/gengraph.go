@@ -361,10 +361,26 @@ func OutputAdj(setup Setup, graph []*Node) {
 }
 
 
-// func Cluster(graph []*Node) [][]*Node {
-// 	cc := make([][]*Node, 0)
+func Cluster(graph []*Node) map[*Node][]*Node {
+	for _, nn := range(graph) {
+		CCMakeSet(nn)
+	}
 	
-// }
+	for _, nn := range(graph) {
+		for mm, _ := range(nn.nbor) {
+			if CCFind(nn) != CCFind(mm) {
+				CCUnion(nn,mm)
+			}
+		}
+	}
+	
+ 	cc := make(map[*Node][]*Node, 0)
+	for _, nn := range(graph) {
+		cc[CCFind(nn)] = append(cc[CCFind(nn)], nn)
+	}
+	
+	return cc
+}
 
 
 func main() {
@@ -374,10 +390,22 @@ func main() {
 	
 	graph := Sample(setup.Dimx, setup.Dimy, setup.Nvertices, setup.Dsample, setup.Ntries)
 	Connectify(graph, setup.Obstacles, setup.Dconnect, setup.Nconnect)
-
-	if setup.Format == "gnuplot" {
-		OutputGnuplot(setup, graph)
-	} else if setup.Format == "adj" {
-		OutputAdj(setup, graph)
+	
+	connected_components := Cluster(graph)
+	// fmt.Println("### there are", len(connected_components), "components with sizes")
+	biggest := make([]*Node, 0)
+	for _, cc := range(connected_components) {
+		// fmt.Println("###", len(cc))
+		if len(cc) > len(biggest) {
+			biggest = cc
+			// fmt.Println("### BIGGEST so far has size", len(cc))
+		}
 	}
+	
+	if setup.Format == "gnuplot" {
+		OutputGnuplot(setup, biggest)
+	} else if setup.Format == "adj" {
+		OutputAdj(setup, biggest)
+	}
+	
 }
