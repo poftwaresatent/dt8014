@@ -2,7 +2,7 @@
 
 %\usepackage{algorithm,amsmath,amssymb,subfig,url}
 \usepackage{amsmath,amssymb,booktabs}
-%\usepackage[pdftex]{graphicx}
+\usepackage[pdftex]{graphicx}
 \usepackage[margin=30mm]{geometry}
 %\usepackage[format=hang,labelfont=it]{caption}
 %\usepackage[noend]{algorithmic}
@@ -28,9 +28,9 @@
 Form groups of 4-5 students and work together on the following tasks.
 
 
-\section*{Neighboring Solutions}
-
-\emph{Purpose: first steps with exploring combinatorial solution spaces.}
+%\section*{Neighboring Solutions}
+%
+%\emph{Purpose: first steps with exploring combinatorial solution spaces.}
 
 
 
@@ -102,8 +102,59 @@ The crossover point $x$ is drawn e.g.\ from the uniform distribution, and the ne
 
 \section*{Ant Colony Optimisation (ACO)}
 
-\emph{Purpose: understand a fundamental building block of ACO.}
+\emph{Purpose: understand fundamental building blocks of ACO.}
 
+\noindent
+Consider the longest path problem on the graph in Figure~\ref{fig:aco}.
+Assume ACO is being used, with a population size of two ants.
+Initially, all edge pheromone levels are zero.
+The pheromone update rule is simply that the ant with the longest weighted path deposits two units of pheromone on every edge it visited, whereas the other ant deposits only a single unit.
 
+The basic exploration probability rule is given by
+
+\begin{equation}
+  P(u,v) = \frac{1 + p(u,v)}{\sum_{w \in N(u)} \bigl(1 + p(u,w)\bigr)}
+\end{equation}
+
+\noindent
+where $u$ denotes the current vertex, $v$ and $w$ denote neighboring vertices, $N(u)$ is the set of vertices reachable from $u$, and $p(u,v)$ denotes the pheromone level of the edge $(u,v)$.
+
+The ants have randomly initialized to the solutions \textbf{(F, G, E, B, C)} and \textbf{(A, D, E, C, B)}.
+
+\begin{enumerate}
+
+\item
+  What are the pheromone levels that result from these paths?
+
+\item
+  After the pheromone update you just computed, what is the value of $P(E,B)$ -- the probability of going from vertex E to B?
+  And how high is $P(B,E)$?
+
+  % weight sum of ant a: 11+9+7+8 = 35
+  % ant b:               5+15+5+8 = 33
+  %
+  % ant a depostits 2 pheromone units on edges FG, GE, EB, and BC
+  % ant b deposits 1 unit on edges AD, DE, EC, CB
+  %
+  % edge BC (and CB) occur in both paths, it ends up with value 3
+  % edges FG, GE, EB end up with 2 units each
+  % edges AD, DE, EC with 1 unit
+  %
+  % from E to B: (1 + 2) / (5 + 2x2 + 2x1) = 3 / 11 = 0.273
+  % from B to E: (1 + 2) / (4 + 2 + 3)     = 3 / 9  = 0.333
+  
+\item
+  In the longest path problem, a vertex can be visited at most once.
+  Formulate a complete exploration step such that this constraint is not violated?
+  
+\end{enumerate}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\columnwidth,trim=1cm 1cm 1cm 1cm]{fig/mst-exercise-1.pdf}
+  \caption{
+    Example weighted undirected graph.
+  }\label{fig:aco}
+\end{figure}
 
 \end{document}
