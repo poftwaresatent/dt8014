@@ -53,7 +53,10 @@ The chosen transition probability function is
 \noindent
 where $f_i$ is the cost of the current solution, $f_j$ the cost of the candidate solution, and $t$ is the temperature parameter.
 
-What is the probability of transitioning from \textbf{(A, C, B, D)} to \textbf{(A, C, D, B)} if the temperature is $T=10$?
+\begin{itemize}
+\item
+  What is the probability of transitioning from \textbf{(A, C, B, D)} to \textbf{(A, C, D, B)} if the temperature is $T=10$?
+\end{itemize}
 
 \begin{center}
   \begin{tabular}{lrrrr}
@@ -80,6 +83,20 @@ What is the probability of transitioning from \textbf{(A, C, B, D)} to \textbf{(
 \section*{Genetic Algorithm (GA)}
 
 \emph{Purpose: think about how to encode candidate solutions for GAs.}
+
+\noindent
+In its basic form, the crossover operation in GAs takes two individuals from the current population, chooses a random crossover point, and swaps the encoding subsequence before and after this point.
+Formally, let the sequence $(s_1 \ldots s_n)$ denote one of the individuals, and $(t_1 \ldots t_n)$ the other.
+The crossover point $x$ is drawn e.g.\ from the uniform distribution, and the new sequences will be $(s_1 \ldots s_x, t_{x+1} \ldots t_n)$ and $(t_1 \ldots t_x, s_{x+1} \ldots s_n)$.
+
+In the TSP, every vertex must be visited exactly once.
+This is called a \emph{tour}.
+In order to apply crossover, it would thus be best to use an encoding that always corresponds to a tour.
+
+\begin{itemize}
+\item
+  Design such an encoding, or modify the crossover operation such that it always produces tours.
+\end{itemize}
 
 
 
