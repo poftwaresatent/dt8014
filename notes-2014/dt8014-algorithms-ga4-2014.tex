@@ -1,0 +1,92 @@
+\documentclass[a4paper]{article}
+
+%\usepackage{algorithm,amsmath,amssymb,subfig,url}
+\usepackage{amsmath,amssymb,booktabs}
+%\usepackage[pdftex]{graphicx}
+\usepackage[margin=30mm]{geometry}
+%\usepackage[format=hang,labelfont=it]{caption}
+%\usepackage[noend]{algorithmic}
+
+%\floatname{algorithm}{Listing}
+%\algsetup{indent=3em}
+%\renewcommand{\algorithmiccomment}[1]{\quad \{\emph{#1}\}}
+
+
+
+\begin{document}
+\title{
+  \large
+  DT8014 Algorithms Group Activities (2014)\\
+  \Large
+  Week 4 -- Randomization}
+\author{Roland Philippsen}
+\maketitle
+
+
+
+\noindent
+Form groups of 4-5 students and work together on the following tasks.
+
+
+\section*{Neighboring Solutions}
+
+\emph{Purpose: first steps with exploring combinatorial solution spaces.}
+
+
+
+\section*{Simulated Annealing (SA)}
+
+\emph{Purpose: understand the basic SA iteration.}
+
+\noindent
+Consider the complete graph specified as the adjacency matrix below.
+Assume you are trying to solve the TSP on this graph using SA.
+The chosen transition probability function is
+
+\begin{equation}
+  P (f_i, f_j) = \begin{cases}
+    1                     &\text{if}\; f_j < f_i \\
+    \exp{\bigl((f_i - f_j) / T\bigr)} &\text{otherwise}
+  \end{cases}
+\end{equation}
+
+\noindent
+where $f_i$ is the cost of the current solution, $f_j$ the cost of the candidate solution, and $t$ is the temperature parameter.
+
+What is the probability of transitioning from \textbf{(A, C, B, D)} to \textbf{(A, C, D, B)} if the temperature is $T=10$?
+
+\begin{center}
+  \begin{tabular}{lrrrr}
+    \toprule
+      &  A &  B &  C &  D \\
+    \midrule
+    A &    &  8 &  5 &  6 \\
+    B &  8 &    &  3 &  9 \\
+    C &  5 &  3 &    &  7 \\
+    D &  6 &  9 &  7 &    \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+% don't forget to add the cost for closing the cycle!
+%
+% fi = 5+3+9+6 = 23
+% fj = 5+7+9+8 = 29
+%
+% exp ((23 - 29) / 10) = exp (-0.6) = 0.548811636094
+
+
+
+\section*{Genetic Algorithm (GA)}
+
+\emph{Purpose: think about how to encode candidate solutions for GAs.}
+
+
+
+\section*{Ant Colony Optimisation (ACO)}
+
+\emph{Purpose: understand a fundamental building block of ACO.}
+
+
+
+\end{document}
